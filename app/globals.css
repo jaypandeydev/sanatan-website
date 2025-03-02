@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 36 100% 97%;
+  --foreground: 0 84% 25%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 0 84% 25%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 84% 25%;
+
+  --primary: 15 75% 52%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 0 100% 30%;
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 36 30% 90%;
+  --muted-foreground: 0 0% 45%;
+
+  --accent: 36 100% 50%;
+  --accent-foreground: 0 84% 25%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 36 30% 80%;
+  --input: 36 30% 80%;
+  --ring: 15 75% 52%;
+
+  --radius: 0.5rem;
+}
+
+body {
+  @apply bg-background text-foreground;
+  font-family: "Poppins", "Noto Sans", sans-serif;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Poppins", "Noto Sans", sans-serif;
+  }
+}
+
