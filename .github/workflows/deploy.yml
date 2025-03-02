@@ -1,0 +1,30 @@
+name: Deploy to Hostinger VPS
+
+on:
+  push:
+    branches:
+      - main  # Change to your branch if needed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Setup SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.HOSTINGER_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H your-vps-ip >> ~/.ssh/known_hosts
+    - name: Deploy to VPS
+      run: |
+        ssh root@147.93.106.12 << 'EOF'
+          cd /home/sanatanmahaparishad/htdocs/sanatanmahaparishad.org
+          git pull origin main
+          npm install
+          npm run build
+          pm2 restart app  # Assuming you use PM2
+        EOF
