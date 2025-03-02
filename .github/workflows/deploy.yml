@@ -13,12 +13,19 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
+    # 🐛 Debugging Step: Check if VPS is reachable from GitHub Actions
+    - name: Debug DNS Resolution
+      run: |
+        nslookup srv719322.hstgr.cloud || nslookup 147.93.106.12
+        ping -c 4 147.93.106.12
+
     - name: Setup SSH
       run: |
         mkdir -p ~/.ssh
         echo "${{ secrets.HOSTINGER_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H your-vps-ip >> ~/.ssh/known_hosts
+        ssh-keyscan -H 147.93.106.12 >> ~/.ssh/known_hosts  # Use IP instead of hostname
+
     - name: Deploy to VPS
       run: |
         ssh root@147.93.106.12 << 'EOF'
