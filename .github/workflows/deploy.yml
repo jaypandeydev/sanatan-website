@@ -45,10 +45,14 @@ jobs:
           run: |
             echo "$SSH_PRIVATE_KEY" > private_key
             chmod 600 private_key
-            ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "
-              pkill -f 'node' || true
+            ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST << 'EOF'
+              echo "🔪 Killing old process..."
+              fuser -k 3000/tcp || true
+        
+              echo "🚀 Restarting app..."
               cd /home/admin/sanatan-website
               npm install --legacy-peer-deps
-              npm run start &
-            "
+              nohup npm run start > out.log 2>&1 &
+            EOF
+        
         
