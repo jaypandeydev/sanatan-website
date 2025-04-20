@@ -1,3 +1,4 @@
+
 name: Deploy to VPS
 
 on:
@@ -16,7 +17,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.17.0'  # Specify the Node.js version you want to use
+          node-version: '18.17.0'
 
       - name: Install dependencies
         run: |
@@ -26,7 +27,7 @@ jobs:
         run: |
           npm run build
 
-            - name: Upload build to VPS
+      - name: Upload build to VPS
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           VPS_USER: admin
@@ -54,6 +55,3 @@ jobs:
             npm install --legacy-peer-deps
             PORT=3001 nohup npm run start > out.log 2>&1 &
           EOF
-
-        
-        
