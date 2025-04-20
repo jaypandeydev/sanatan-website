@@ -1,37 +1,48 @@
-name: Deploy to Hostinger VPS
+name: Deploy to VPS
 
 on:
   push:
     branches:
-      - main  # Change to your branch if needed
+      - main  # Trigger deployment when changes are pushed to the main branch
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu for the CI environment
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    # 🐛 Debugging Step: Check if VPS is reachable from GitHub Actions
-    - name: Debug DNS Resolution
-      run: |
-        nslookup srv719322.hstgr.cloud || nslookup 147.93.106.12
-        ping -c 4 147.93.106.12
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Specify the Node.js version you want to use
 
-    - name: Setup SSH
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.HOSTINGER_SSH_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H 147.93.106.12 >> ~/.ssh/known_hosts  # Use IP instead of hostname
+      - name: Install dependencies
+        run: |
+          npm install --legacy-peer-deps
 
-    - name: Deploy to VPS
-      run: |
-        ssh root@147.93.106.12 << 'EOF'
-          cd /home/sanatanmahaparishad/htdocs/sanatanmahaparishad.org
-          git pull origin main
-          npm install
+      - name: Build project
+        run: |
           npm run build
-          pm2 restart app  # Assuming you use PM2
-        EOF
+
+      - name: Upload build to VPS
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Set this as a secret in GitHub
+          VPS_USER: admin
+          VPS_HOST: 147.93.106.12
+          VPS_PATH: /home/admin/sanatan-website
+        run: |
+          echo "$SSH_PRIVATE_KEY" > private_key
+          chmod 600 private_key
+          scp -i private_key -o StrictHostKeyChecking=no -r ./* $VPS_USER@$VPS_HOST:$VPS_PATH
+
+      - name: Restart application on VPS
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Set this as a secret in GitHub
+          VPS_USER: admin
+          VPS_HOST: 147.93.106.12
+        run: |
+          echo "$SSH_PRIVATE_KEY" > private_key
+          chmod 600 private_key
+          ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "cd $VPS_PATH && npm run start"
