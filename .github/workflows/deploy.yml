@@ -52,7 +52,7 @@ jobs:
               echo "🚀 Restarting app..."
               cd /home/admin/sanatan-website
               npm install --legacy-peer-deps
-              nohup npm run start -p 3001 > out.log 2>&1 &
+              PORT=3001 nohup npm run start > out.log 2>&1 &
             EOF
         
         
