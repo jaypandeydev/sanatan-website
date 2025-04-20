@@ -35,7 +35,7 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
-          scp -i private_key -o StrictHostKeyChecking=no -r ./* $VPS_USER@$VPS_HOST:$VPS_PATH
+          scp -i private_key -o StrictHostKeyChecking=no -r .next public package.json $VPS_USER@$VPS_HOST:$VPS_PATH
 
       - name: Restart application on VPS
         env:
