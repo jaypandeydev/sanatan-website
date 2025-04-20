@@ -35,7 +35,7 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
-          scp -i private_key -o StrictHostKeyChecking=no -r .next public package.json $VPS_USER@$VPS_HOST:$VPS_PATH
+          ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "cd /home/admin/sanatan-website && npm run start"
 
       - name: Restart application on VPS
         env:
@@ -45,4 +45,4 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
-          ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "cd $VPS_PATH && npm run start"
+          ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "cd /home/admin/sanatan-website && npm run start"
