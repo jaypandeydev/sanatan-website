@@ -26,33 +26,34 @@ jobs:
         run: |
           npm run build
 
-      - name: Upload build to VPS
+            - name: Upload build to VPS
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Set this as a secret in GitHub
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           VPS_USER: admin
           VPS_HOST: 147.93.106.12
           VPS_PATH: /home/admin/sanatan-website
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
-          ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "cd /home/admin/sanatan-website && npm run start"
+          scp -i private_key -o StrictHostKeyChecking=no -r .next public package.json $VPS_USER@$VPS_HOST:$VPS_PATH
 
-          - name: Restart application on VPS
-          env:
-            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            VPS_USER: admin
-            VPS_HOST: 147.93.106.12
-          run: |
-            echo "$SSH_PRIVATE_KEY" > private_key
-            chmod 600 private_key
-            ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST << 'EOF'
-              echo "🔪 Killing old process..."
-              fuser -k 3000/tcp || true
-        
-              echo "🚀 Restarting app..."
-              cd /home/admin/sanatan-website
-              npm install --legacy-peer-deps
-              PORT=3001 nohup npm run start > out.log 2>&1 &
-            EOF
+      - name: Restart application on VPS
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          VPS_USER: admin
+          VPS_HOST: 147.93.106.12
+        run: |
+          echo "$SSH_PRIVATE_KEY" > private_key
+          chmod 600 private_key
+          ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST << 'EOF'
+            echo "🔪 Killing old process..."
+            fuser -k 3000/tcp || true
+
+            echo "🚀 Restarting app..."
+            cd /home/admin/sanatan-website
+            npm install --legacy-peer-deps
+            PORT=3001 nohup npm run start > out.log 2>&1 &
+          EOF
+
         
         
