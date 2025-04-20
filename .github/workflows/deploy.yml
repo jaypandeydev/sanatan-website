@@ -37,12 +37,18 @@ jobs:
           chmod 600 private_key
           ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "cd /home/admin/sanatan-website && npm run start"
 
-      - name: Restart application on VPS
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Set this as a secret in GitHub
-          VPS_USER: admin
-          VPS_HOST: 147.93.106.12
-        run: |
-          echo "$SSH_PRIVATE_KEY" > private_key
-          chmod 600 private_key
-          ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "cd /home/admin/sanatan-website && npm run start"
+          - name: Restart application on VPS
+          env:
+            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+            VPS_USER: admin
+            VPS_HOST: 147.93.106.12
+          run: |
+            echo "$SSH_PRIVATE_KEY" > private_key
+            chmod 600 private_key
+            ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "
+              pkill -f 'node' || true
+              cd /home/admin/sanatan-website
+              npm install --legacy-peer-deps
+              npm run start &
+            "
+        
