@@ -22,7 +22,7 @@ export default function ContactPage() {
         },
         phone: {
           title: "फोन",
-          content: "+91 9876543210",
+          content: "+91 9876543210-cicd",
         },
         email: {
           title: "ईमेल",
@@ -53,7 +53,7 @@ export default function ContactPage() {
         },
         phone: {
           title: "Phone",
-          content: "+91 9876543210",
+          content: "+91 9876543210-cicd",
         },
         email: {
           title: "Email",
