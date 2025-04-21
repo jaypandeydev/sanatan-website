@@ -1,14 +1,13 @@
-
 name: Deploy to VPS
 
 on:
   push:
     branches:
-      - main  # Trigger deployment when changes are pushed to the main branch
+      - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Use the latest Ubuntu for the CI environment
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -36,7 +35,7 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
-          scp -i private_key -o StrictHostKeyChecking=no -r .next public package.json $VPS_USER@$VPS_HOST:$VPS_PATH
+          scp -i private_key -o StrictHostKeyChecking=no -r .next public package.json app components styles next.config.mjs tsconfig.json $VPS_USER@$VPS_HOST:$VPS_PATH
 
       - name: Restart application on VPS
         env:
@@ -47,10 +46,10 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
           ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST << 'EOF'
-            echo "🔪 Killing old process..."
-            fuser -k 3000/tcp || true
+            echo "🔪 Killing old process (if any)..."
+            fuser -k 3001/tcp || pkill -f "node" || true
 
-            echo "🚀 Restarting app..."
+            echo "🚀 Restarting app on port 3001..."
             cd /home/admin/sanatan-website
             npm install --legacy-peer-deps
             PORT=3001 nohup npm run start > out.log 2>&1 &
