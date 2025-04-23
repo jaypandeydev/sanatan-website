@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,11 +22,7 @@ jobs:
         run: |
           npm install --legacy-peer-deps
 
-      - name: Build project
-        run: |
-          npm run build
-
-      - name: Upload build to VPS
+      - name: Upload source to VPS
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           VPS_USER: root
@@ -35,7 +31,7 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
-          scp -i private_key -o StrictHostKeyChecking=no -r .next public package.json app components styles next.config.mjs tsconfig.json $VPS_USER@$VPS_HOST:$VPS_PATH
+          scp -i private_key -o StrictHostKeyChecking=no -r app components public styles .babelrc next.config.mjs tsconfig.json package.json package-lock.json $VPS_USER@$VPS_HOST:$VPS_PATH
 
       - name: Restart application on VPS
         env:
@@ -46,11 +42,17 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
           ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST << 'EOF'
-            echo "🔪 Killing old process (if any)..."
+            echo "🔪 Killing old process..."
             fuser -k 3001/tcp || pkill -f "node" || true
 
-            echo "🚀 Restarting app on port 3001..."
+            echo "🧹 Cleaning old build..."
             cd /root/sanatan-website
+            rm -rf .next
+
+            echo "📦 Installing deps & building..."
             npm install --legacy-peer-deps
+            npm run build
+
+            echo "🚀 Starting server on port 3001..."
             PORT=3001 nohup npm run start > out.log 2>&1 &
           EOF
