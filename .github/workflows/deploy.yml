@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
-          scp -i private_key -o StrictHostKeyChecking=no -r app components public styles next.config.mjs tsconfig.json package.json $VPS_USER@$VPS_HOST:$VPS_PATH
+          scp -i private_key -o StrictHostKeyChecking=no -r app components contexts public styles next.config.mjs tsconfig.json package.json $VPS_USER@$VPS_HOST:$VPS_PATH
 
       - name: Restart application on VPS
         env:
