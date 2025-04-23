@@ -29,9 +29,9 @@ jobs:
       - name: Upload build to VPS
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          VPS_USER: admin
+          VPS_USER: root
           VPS_HOST: 147.93.106.12
-          VPS_PATH: /home/admin/sanatan-website
+          VPS_PATH: /root/sanatan-website
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
@@ -40,7 +40,7 @@ jobs:
       - name: Restart application on VPS
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          VPS_USER: admin
+          VPS_USER: root
           VPS_HOST: 147.93.106.12
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
@@ -50,7 +50,7 @@ jobs:
             fuser -k 3001/tcp || pkill -f "node" || true
 
             echo "🚀 Restarting app on port 3001..."
-            cd /home/admin/sanatan-website
+            cd /root/sanatan-website
             npm install --legacy-peer-deps
             PORT=3001 nohup npm run start > out.log 2>&1 &
           EOF
