@@ -43,7 +43,7 @@ jobs:
           chmod 600 private_key
           ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST << 'EOF'
             echo "🔪 Killing old process..."
-            fuser -k 3001/tcp || pkill -f "node" || true
+            fuser -k 3000/tcp || pkill -f "node" || true
 
             echo "🧹 Cleaning old build..."
             cd /root/sanatan-website
@@ -53,6 +53,6 @@ jobs:
             npm install --legacy-peer-deps
             npm run build
 
-            echo "🚀 Starting server on port 3001..."
-            PORT=3001 nohup npm run start > out.log 2>&1 &
+            echo "🚀 Starting server on port 3000..."
+            PORT=3000 nohup npm run start > out.log 2>&1 &
           EOF
