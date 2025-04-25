@@ -12,7 +12,7 @@ export default function Home() {
   const content = {
     hi: {
       hero: {
-        title: "सनातन धर्म की रक्षा एवं प्रचार ✨ Updated again",
+        title: "सनातन धर्म की रक्षा एवं प्रचार Updated",
         subtitle: "भारतीय संस्कृति और सनातन धर्म की रक्षा के लिए समर्पित संस्था",
         cta1: "हमसे जुड़ें",
         cta2: "और जानें",
