@@ -19,7 +19,7 @@ jobs:
           node-version: 'lts/*' # Use the latest LTS version of Node.js
 
       - name: Install dependencies
-        run: npm install # Or yarn install
+        run: npm install --legacy-peer-deps # Or run: yarn install --force # Or yarn install
 
       - name: Build Next.js app
         run: npm run build # Or yarn build
