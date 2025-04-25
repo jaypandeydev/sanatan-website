@@ -3,56 +3,46 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - main
+      - main # Or your main branch name
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '18.17.0'
+          node-version: 'lts/*' # Use the latest LTS version of Node.js
 
       - name: Install dependencies
-        run: |
-          npm install --legacy-peer-deps
+        run: npm install # Or yarn install
 
-      - name: Upload source to VPS
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          VPS_USER: root
-          VPS_HOST: 147.93.106.12
-          VPS_PATH: /root/sanatan-website
-        run: |
-          echo "$SSH_PRIVATE_KEY" > private_key
-          chmod 600 private_key
-          scp -i private_key -o StrictHostKeyChecking=no -r app components contexts lib public styles next.config.mjs tsconfig.json package.json $VPS_USER@$VPS_HOST:$VPS_PATH
+      - name: Build Next.js app
+        run: npm run build # Or yarn build
 
-      - name: Restart application on VPS
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          VPS_USER: root
-          VPS_HOST: 147.93.106.12
-        run: |
-          echo "$SSH_PRIVATE_KEY" > private_key
-          chmod 600 private_key
-          ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST << 'EOF'
-            echo "🔪 Killing old process..."
-            fuser -k 3000/tcp || pkill -f "node" || true
-
-            echo "🧹 Cleaning old build..."
-            cd /root/sanatan-website
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }} # Default SSH port is 22
+          script: |
+            cd /var/www/sanatan-website-v2 # Or your project directory
+            # Stop the old pm2 process
+            pm2 stop sanatan-website
+            # Delete the old build (optional, but can save space)
+            rm -rf node_modules
             rm -rf .next
-
-            echo "📦 Installing deps & building..."
-            npm install --legacy-peer-deps
-            npm run build
-
-            echo "🚀 Starting server on port 3000..."
-            PORT=3000 nohup npm run start > out.log 2>&1 &
-          EOF
+            # Transfer the new build
+            rsync -avz --delete ./ .
+            # Install dependencies again (important for production)
+            npm install --production # Or yarn install --production
+            # Build the app again (to ensure production optimizations)
+            npm run build # Or yarn build
+            # Start/restart the pm2 process
+            pm2 startOrRestart npm --name "sanatan-website" -- start # Or yarn start
