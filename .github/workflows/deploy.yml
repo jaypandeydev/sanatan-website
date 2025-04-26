@@ -28,8 +28,8 @@ jobs:
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}          
-          key: ${{ env.SSH_PRIVATE_KEY }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
           port: ${{ secrets.VPS_PORT || 22 }} # Default SSH port is 22
           script: |
             cd /var/www/sanatan-website-v2 # Or your project directory
