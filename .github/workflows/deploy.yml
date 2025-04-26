@@ -31,7 +31,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_PRIVATE_KEY }}
           port: ${{ secrets.VPS_PORT || 22 }}
-          source: ".next/*,public/*,package.json,ecosystem.config.js" # choose what you want
+          source: ".next/*,public/*,package.json,ecosystem.config.js,app/**/*" # choose what you want
           target: "/var/www/sanatan-website-v2"
 
       - name: Deploy (SSH) and Restart App
