@@ -3,7 +3,7 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - main # Or your main branch name
+      - main
 
 jobs:
   build-and-deploy:
@@ -16,33 +16,32 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*' # Use the latest LTS version of Node.js
+          node-version: 'lts/*'
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps # Or run: yarn install --force # Or yarn install
+        run: npm install --legacy-peer-deps
 
       - name: Build Next.js app
-        run: npm run build # Or yarn build
+        run: npm run build
 
-      - name: Deploy to VPS
+      - name: Upload files to VPS
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          source: ".next/*,public/*,package.json,ecosystem.config.js" # choose what you want
+          target: "/var/www/sanatan-website-v2"
+
+      - name: Deploy (SSH) and Restart App
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_PRIVATE_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }} # Default SSH port is 22
+          port: ${{ secrets.VPS_PORT || 22 }}
           script: |
-            cd /var/www/sanatan-website-v2 # Or your project directory
-            # Stop the old pm2 process
-            pm2 stop sanatan-website
-            # Delete the old build (optional, but can save space)
-            rm -rf node_modules
-            rm -rf .next
-            # Transfer the new build
-            rsync -avz --delete ./ .
-            # Install dependencies again (important for production)
-            npm install --production # Or yarn install --production
-            # Build the app again (to ensure production optimizations)
-            npm run build # Or yarn build
-            # Start/restart the pm2 process
-            pm2 startOrRestart npm --name "sanatan-website" -- start # Or yarn start
+            cd /var/www/sanatan-website-v2
+            npm install --production
+            pm2 restart sanatan-website
