@@ -1,7 +1,8 @@
 "use server"
 
 import { z } from "zod"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "../../lib/prisma";
+
 
 // Define validation schema
 const formSchema = z.object({
