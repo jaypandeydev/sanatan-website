@@ -16,6 +16,7 @@ export default function Header() {
     { href: "/about", label: language === "hi" ? "हमारे बारे में" : "About Us" },
     { href: "/activities", label: language === "hi" ? "गतिविधियां" : "Activities" },
     { href: "/contact", label: language === "hi" ? "संपर्क" : "Contact" },
+    { href: "/join", label: language === "hi" ? "सदस्यता" : "Membership" },
   ]
 
   return (
@@ -68,4 +69,3 @@ export default function Header() {
     </header>
   )
 }
-

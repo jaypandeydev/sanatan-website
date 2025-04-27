@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Shield, BookOpen, Landmark } from "lucide-react"
 import { useLanguage } from "@/contexts/LanguageContext"
+import Link from "next/link"
 
 export default function Home() {
   const { language } = useLanguage()
@@ -62,14 +63,17 @@ export default function Home() {
           {
             title: "वार्षिक सम्मेलन 2023",
             description: "सनातन महापरिषद भारत का वार्षिक सम्मेलन लखनऊ में आयोजित किया गया।",
+            image: "/images/annual-conference.jpeg",
           },
           {
             title: "गीता जयंती समारोह",
             description: "गीता जयंती के अवसर पर विशेष प्रवचन और सत्संग का आयोजन।",
+            image: "/images/gita-jayanti.jpeg",
           },
           {
             title: "रामनवमी उत्सव",
             description: "रामनवमी के पावन अवसर पर भव्य कार्यक्रम का आयोजन किया गया।",
+            image: "/images/ram-navami.jpeg",
           },
         ],
         cta: "विस्तार से पढ़ें",
@@ -132,14 +136,17 @@ export default function Home() {
           {
             title: "Annual Conference 2023",
             description: "Sanatan Mahaparishad Bharat's annual conference was held in Lucknow.",
+            image: "/images/annual-conference.jpeg",
           },
           {
             title: "Gita Jayanti Celebration",
             description: "Special discourses and satsang organized on the occasion of Gita Jayanti.",
+            image: "/images/gita-jayanti.jpeg",
           },
           {
             title: "Ram Navami Festival",
             description: "A grand event was organized on the auspicious occasion of Ram Navami.",
+            image: "/images/ram-navami.jpeg",
           },
         ],
         cta: "Read More",
@@ -163,7 +170,9 @@ export default function Home() {
           <h1 className="text-3xl md:text-5xl font-bold text-red-800 mb-6">{t.hero.title}</h1>
           <p className="text-lg md:text-xl text-red-700 mb-8 max-w-3xl mx-auto">{t.hero.subtitle}</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button className="bg-red-700 hover:bg-red-800 text-white px-8 py-2 rounded">{t.hero.cta1}</Button>
+            <Link href="/join">
+              <Button className="bg-red-700 hover:bg-red-800 text-white px-8 py-2 rounded">{t.hero.cta1}</Button>
+            </Link>
             <Button variant="outline" className="border-red-700 text-red-700 hover:bg-red-50 px-8 py-2 rounded">
               {t.hero.cta2}
             </Button>
@@ -234,12 +243,7 @@ export default function Home() {
                 className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden"
               >
                 <div className="relative h-48 w-full">
-                  <Image
-                    src={`/placeholder.svg?height=300&width=500&text=Event+${index + 1}`}
-                    alt={event.title}
-                    fill
-                    className="object-cover"
-                  />
+                  <Image src={event.image || "/placeholder.svg"} alt={event.title} fill className="object-cover" />
                 </div>
                 <CardHeader>
                   <CardTitle className="text-lg font-bold text-red-800">{event.title}</CardTitle>
@@ -261,10 +265,11 @@ export default function Home() {
         <div className="container mx-auto text-center">
           <h2 className="text-2xl md:text-4xl font-bold mb-6">{t.join.title}</h2>
           <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto">{t.join.description}</p>
-          <Button className="bg-white text-red-700 hover:bg-gray-100 px-8 py-2 rounded">{t.join.cta}</Button>
+          <Link href="/join">
+            <Button className="bg-white text-red-700 hover:bg-gray-100 px-8 py-2 rounded">{t.join.cta}</Button>
+          </Link>
         </div>
       </section>
     </div>
   )
 }
-

@@ -1,0 +1,33 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SanataniUserDetails {
+  id                 Int      @id @default(autoincrement())
+  membershipType     String
+  fullName           String
+  dateOfBirth        DateTime?
+  age                String?
+  sonDaughterOf      String?
+  profession         String?
+  designation        String?
+  employeeNumber     String?
+  residentialAddress String?
+  contactPhone       String?
+  mobileNumber       String
+  email              String   @unique
+  fax                String?
+  otherDetails       String?
+  membershipNumber   String?
+  dateOfApplication  DateTime?
+  introducedBy       String?
+  introducer         String?
+  createdAt          DateTime @default(now())
+}
