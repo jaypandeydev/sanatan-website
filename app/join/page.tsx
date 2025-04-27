@@ -151,9 +151,10 @@ useEffect(() => {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleRadioChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, membershipType: value as "lifetime" | "ordinary" }))
+  const handleRadioChange = (value: "lifetime" | "ordinary") => {
+    setFormData((prev) => ({ ...prev, membershipType: value }))
   }
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
