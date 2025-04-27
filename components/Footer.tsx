@@ -1,12 +1,12 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import Link from "next/link";
-import { Facebook, Instagram, Youtube, Twitter, FactoryIcon, YoutubeIcon, InstagramIcon, XIcon, FacebookIcon } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import Image from "next/image"
+import Link from "next/link"
+import { FactoryIcon, YoutubeIcon, InstagramIcon, XIcon, FacebookIcon } from "lucide-react"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 export default function Footer() {
-  const { language } = useLanguage();
+  const { language } = useLanguage()
 
   const content = {
     hi: {
@@ -33,9 +33,9 @@ export default function Footer() {
       followUs: "Follow Us",
       copyright: "All rights reserved.",
     },
-  };
+  }
 
-  const t = content[language];
+  const t = content[language]
 
   return (
     <footer className="bg-orange-50 text-red-800 py-8 border-t border-orange-200">
@@ -64,6 +64,9 @@ export default function Footer() {
               <Link href="/activities" className="hover:text-red-600 transition-colors">
                 {t.activities}
               </Link>
+              <Link href="/join" className="hover:text-red-600 transition-colors">
+                {language === "hi" ? "सदस्यता" : "Membership"}
+              </Link>
               <Link href="/resources" className="hover:text-red-600 transition-colors">
                 {t.resources}
               </Link>
@@ -88,7 +91,7 @@ export default function Footer() {
           <div className="flex flex-col items-center md:items-start">
             <h4 className="font-semibold text-lg mb-3">{t.followUs}</h4>
             <div className="flex gap-4">
-              <Link href="https://facebook.com/sanatanmahaparishadbharat" className="hover:text-red-600 transition-colors" target="_blank"
+            <Link href="https://facebook.com/sanatanmahaparishadbharat" className="hover:text-red-600 transition-colors" target="_blank"
               rel="noopener noreferrer">
                 <FacebookIcon size={24} />
                 
@@ -113,11 +116,10 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Copyright Section (Fixed) */}
         <div className="mt-8 pt-4 border-t border-red-200 text-center">
-          <p>&copy; {new Date().getFullYear()} सनातन महापरिषद् भारत. {t.copyright}</p>
+          <p>&copy; {new Date().getFullYear()} सनातन महापरिषद् भारत.{t.copyright}</p>
         </div>
       </div>
     </footer>
-  );
+  )
 }
