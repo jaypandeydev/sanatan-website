@@ -12,13 +12,21 @@ jobs:
     steps:
       # Step 1: Checkout Code
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      # Step 2: List workspace contents (Debug)
+      - name: List project root files
+        run: |
+          echo "Root contents:"
+          ls -al
+          echo "Components folder:"
+          ls -al components || echo "No components folder found"    
+
       # Step 2: Cache Node Modules
       - name: Cache node modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             node_modules
