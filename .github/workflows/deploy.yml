@@ -24,8 +24,11 @@ jobs:
       - name: Install dependencies (Clean Install)
         run: npm install --legacy-peer-deps
 
-      - name: Build Next.js app with explicit tsconfig
-        run: npx next build --tsconfig ./tsconfig.json
+      - name: Explicit TypeScript Build (if needed)
+        run: npx tsc --noEmit
+
+      - name: Build Next.js app
+        run: npm run build
 
       - name: Upload essential files and components to VPS
         uses: appleboy/scp-action@v0.1.4
