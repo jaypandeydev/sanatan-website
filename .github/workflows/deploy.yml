@@ -22,7 +22,7 @@ jobs:
           node-version: 'lts/*'
 
       - name: Clean workspace (Forceful)
-        run: rm -rf node_modules .next tsconfig.json package-lock.json yarn.lock
+        run: rm -rf node_modules .next package-lock.json yarn.lock
 
       - name: Install dependencies (Clean Install)
         run: npm install --legacy-peer-deps
