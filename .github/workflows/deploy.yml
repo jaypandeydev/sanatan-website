@@ -24,8 +24,8 @@ jobs:
       - name: Install dependencies (Clean Install)
         run: npm install --legacy-peer-deps
 
-      - name: Explicit TypeScript Build (if needed)
-        run: npx tsc --noEmit
+      - name: Explicit TypeScript Build (with project file)
+        run: npx tsc --noEmit -p ./tsconfig.json
 
       - name: Build Next.js app
         run: npm run build
