@@ -10,41 +10,59 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout Code
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: List workspace contents # This step is for debugging
-        run: ls -al
+      # Step 2: Cache Node Modules
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
+      # Step 3: Setup Node.js Environment
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
 
-      - name: Clean workspace (Forceful)
-        run: rm -rf node_modules .next package-lock.json yarn.lock
+      # Step 4: Show npm config (for debugging slow installs)
+      - name: Show npm config and environment info
+        run: |
+          npm config list
+          node -v
+          npm -v
 
-      - name: Install dependencies (Clean Install)
-        run: npm install --legacy-peer-deps
+      # Step 5: Install Dependencies (without legacy-peer-deps)
+      - name: Install dependencies
+        run: npm install
 
-      - name: Explicit TypeScript Build (with project file)
-        run: npx tsc --noEmit -p ./tsconfig.json
+      # Step 6: Type Check with TypeScript
+      - name: TypeScript Type Check
+        run: npx tsc --noEmit
 
+      # Step 7: Build Next.js App
       - name: Build Next.js app
         run: npm run build
 
-      - name: Upload essential files and components to VPS
+      # Step 8: Upload Essential Files to VPS
+      - name: Upload files to VPS
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_PRIVATE_KEY }}
           port: ${{ secrets.VPS_PORT || 22 }}
-          source: ".next/*,public/*,package.json,package-lock.json,yarn.lock,ecosystem.config.js,app/*,pages/*,components/*,contexts/*,tsconfig.json"
+          source: ".next/**,public/**,package.json,package-lock.json,ecosystem.config.js,app/**,pages/**,components/**,contexts/**,tsconfig.json"
           target: "/var/www/sanatan-website-v2"
 
+      # Step 9: SSH into VPS and Restart PM2 Process
       - name: Deploy (SSH) and Restart App
         uses: appleboy/ssh-action@v1
         with:
