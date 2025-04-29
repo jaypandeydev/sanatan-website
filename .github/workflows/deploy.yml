@@ -24,11 +24,8 @@ jobs:
       - name: Install dependencies (Clean Install)
         run: npm install --legacy-peer-deps
 
-      - name: Set NODE_PATH
-        run: echo "NODE_PATH=./" >> $GITHUB_ENV
-
-      - name: Build Next.js app
-        run: npm run build
+      - name: Build Next.js app with explicit tsconfig
+        run: npx next build --tsconfig ./tsconfig.json
 
       - name: Upload essential files and components to VPS
         uses: appleboy/scp-action@v0.1.4
