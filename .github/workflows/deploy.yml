@@ -47,7 +47,11 @@ jobs:
           node -v
           npm -v
 
-      # Step 5: Show current working directory (debug)
+      # Step 5: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 6: Show current directory (optional debug)
       - name: Show current directory
         run: |
           echo "Current directory path:"
@@ -55,15 +59,10 @@ jobs:
           echo "Contents of current directory:"
           ls -al
 
-      # Step 6: TypeScript Type Check using tsconfig.build.json
+      # Step 7: TypeScript Type Check (Build Config)
       - name: TypeScript Type Check (Build Config)
         working-directory: .
         run: npx tsc --noEmit -p tsconfig.build.json
-
-
-      # Step 7: Build Next.js App
-      - name: Build Next.js app
-        run: npm run build
 
       # Step 8: Upload Essential Files to VPS
       - name: Upload files to VPS
