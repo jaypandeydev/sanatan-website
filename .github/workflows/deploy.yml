@@ -34,7 +34,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_PRIVATE_KEY }}
           port: ${{ secrets.VPS_PORT || 22 }}
-          source: ".next/*,public/*,package.json,package-lock.json,yarn.lock,ecosystem.config.js,app/*,pages/*,components/*,tsconfig.json" # Ensure tsconfig.json is included
+          source: ".next/*,public/*,package.json,package-lock.json,yarn.lock,ecosystem.config.js,app/*,pages/*,components/*,contexts/*,tsconfig.json" # Or jsconfig.json
           target: "/var/www/sanatan-website-v2"
 
       - name: Deploy (SSH) and Restart App
