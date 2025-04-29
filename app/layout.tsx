@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { Poppins, Noto_Sans } from "next/font/google"
 import "./globals.css"
 import Header from "@/components/header"
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 import { LanguageProvider } from "@/contexts/LanguageContext"
 
 const poppins = Poppins({
