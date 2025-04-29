@@ -13,6 +13,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: List workspace contents # This step is for debugging
+        run: ls -al
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
