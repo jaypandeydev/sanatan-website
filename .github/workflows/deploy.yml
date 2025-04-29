@@ -47,13 +47,19 @@ jobs:
           node -v
           npm -v
 
-      # Step 5: Install Dependencies (without legacy-peer-deps)
-      - name: Install dependencies
-        run: npm install
+      # Step 5: Show current working directory (debug)
+      - name: Show current directory
+        run: |
+          echo "Current directory path:"
+          pwd
+          echo "Contents of current directory:"
+          ls -al
 
-      # Step 6: Type Check with TypeScript
-      - name: TypeScript Type Check
+      # Step 6: TypeScript Type Check using tsconfig.build.json
+      - name: TypeScript Type Check (Build Config)
+        working-directory: .
         run: npx tsc --noEmit -p tsconfig.build.json
+
 
       # Step 7: Build Next.js App
       - name: Build Next.js app
