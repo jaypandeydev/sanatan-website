@@ -288,22 +288,27 @@ useEffect(() => {
                     </PopoverTrigger>
                     <PopoverContent className="w-72 p-0 transition ease-in-out duration-300 transform origin-top scale-95 data-[state=open]:scale-100 data-[state=closed]:scale-95">
                     <Calendar
-                      mode="single"
-                      selected={dobDate}
-                      onSelect={setDobDate}
-                      className="w-full bg-white rounded-lg p-4 text-center"
-                      classNames={{
-                        months: "flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0",
-                        month: "space-y-4",
-                        table: "w-full border-collapse space-y-1",
-                        head_row: "flex",
-                        head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
-                        row: "flex w-full mt-2",
-                        cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-red-100",
-                        day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
-                      }}
-                    />
-
+                    mode="single"
+                    selected={dobDate}
+                    onSelect={setDobDate}
+                    captionLayout="dropdown"
+                    fromYear={1900}
+                    toYear={new Date().getFullYear()}
+                    className="w-full bg-white rounded-lg p-4 text-center"
+                    classNames={{
+                      months: "flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0",
+                      month: "space-y-4",
+                      table: "w-full border-collapse space-y-1",
+                      head_row: "flex",
+                      head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
+                      row: "flex w-full mt-2",
+                      cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-red-100",
+                      day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
+                      caption_dropdowns: "flex justify-center gap-2", // 🛑 ADD THIS
+                      caption_label: "hidden",                        // 🛑 HIDE LABEL
+                      dropdown: "rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-red-400 focus:ring-2 focus:ring-red-400", // 🛑 STYLE DROPDOWN
+                    }}
+                  />
                     </PopoverContent>
                   </Popover>
                   </div>
@@ -497,6 +502,9 @@ useEffect(() => {
                       mode="single"
                       selected={dobDate}
                       onSelect={setDobDate}
+                      captionLayout="dropdown"
+                      fromYear={1900}
+                      toYear={new Date().getFullYear()}
                       className="w-full bg-white rounded-lg p-4 text-center"
                       classNames={{
                         months: "flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0",
@@ -507,6 +515,9 @@ useEffect(() => {
                         row: "flex w-full mt-2",
                         cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-red-100",
                         day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
+                        caption_dropdowns: "flex justify-center gap-2", // 🛑 ADD THIS
+                        caption_label: "hidden",                        // 🛑 HIDE LABEL
+                        dropdown: "rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-red-400 focus:ring-2 focus:ring-red-400", // 🛑 STYLE DROPDOWN
                       }}
                     />
                     </PopoverContent>

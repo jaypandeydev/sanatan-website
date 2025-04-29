@@ -24,14 +24,14 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
-      - name: Upload files to VPS
+      - name: Upload essential files to VPS
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_PRIVATE_KEY }}
           port: ${{ secrets.VPS_PORT || 22 }}
-          source: ".next/*,public/*,package.json,ecosystem.config.js,app" # choose what you want
+          source: ".next/*,public/*,package.json,package-lock.json,yarn.lock,ecosystem.config.js,app/*" # Explicitly list what to include
           target: "/var/www/sanatan-website-v2"
 
       - name: Deploy (SSH) and Restart App
@@ -43,5 +43,6 @@ jobs:
           port: ${{ secrets.VPS_PORT || 22 }}
           script: |
             cd /var/www/sanatan-website-v2
+            rm -rf node_modules # Ensure a clean install
             npm install --production
             pm2 restart sanatan-website
