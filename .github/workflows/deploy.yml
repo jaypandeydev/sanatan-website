@@ -30,7 +30,13 @@ jobs:
       - name: Rename layout chunk (TEMPORARY DIAGNOSTIC)
         run: |
           cd .next/static/chunks/app
-          mv layout-e5704819ba26cfd8.js layout-4995d0ed78fa7f3b.js
+          # Find the layout chunk file (assuming it starts with 'layout-' and ends with '.js')
+          LAYOUT_CHUNK=$(find . -name "layout-*.js")
+          if [ -n "$LAYOUT_CHUNK" ]; then
+            mv "$LAYOUT_CHUNK" layout-4995d0ed78fa7f3b.js
+          else
+            echo "Warning: Could not find layout chunk to rename."
+          fi
 
       - name: Upload files to VPS
         uses: appleboy/scp-action@v0.1.4
