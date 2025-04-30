@@ -27,6 +27,11 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
+      - name: Rename layout chunk (TEMPORARY DIAGNOSTIC)
+        run: |
+          cd .next/static/chunks/app
+          mv layout-e5704819ba26cfd8.js layout-4995d0ed78fa7f3b.js
+
       - name: Upload files to VPS
         uses: appleboy/scp-action@v0.1.4
         with:
