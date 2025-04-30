@@ -10,67 +10,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout Code
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # ✅ Step 2: Check Footer file casing (Debug)
-      - name: Check Footer file casing
-        run: |
-          echo "Looking for Footer.tsx (case-sensitive)..."
-          find . -type f -iname '*footer.tsx'
+      - name: Clean workspace (Forceful)
+        run: rm -rf node_modules .next tsconfig.json package-lock.json yarn.lock
 
-      # Step 3: List workspace contents (Debug)
-      - name: List project root files
-        run: |
-          echo "Root contents:"
-          ls -al
-          echo "Components folder:"
-          ls -al components || echo "No components folder found"    
-
-      # Step 4: Cache Node Modules
-      - name: Cache node modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      # Step 5: Setup Node.js Environment
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-
-      # Step 6: Show npm config (for debugging slow installs)
-      - name: Show npm config and environment info
-        run: |
-          npm config list
-          node -v
-          npm -v
-
-      # Step 7: Install dependencies
-      - name: Install dependencies
+      - name: Install dependencies (Clean Install)
         run: npm install
 
-      # Step 8: Show current directory (optional debug)
-      - name: Show current directory
-        run: |
-          echo "Current directory path:"
-          pwd
-          echo "Contents of current directory:"
-          ls -al
+      - name: Clean Next.js build cache
+        run: rm -rf .next/cache
 
-      # Step 9: TypeScript Type Check (Build Config)
-      - name: TypeScript Type Check (Build Config)
-        working-directory: .
-        run: npx tsc --noEmit -p tsconfig.build.json
+      - name: Build Next.js app
+        run: npm run build
 
-      # Step 10: Upload Essential Files to VPS
       - name: Upload files to VPS
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -81,7 +37,6 @@ jobs:
           source: ".next/**,public/**,package.json,package-lock.json,ecosystem.config.js,app/**,pages/**,components/**,contexts/**,tsconfig.json"
           target: "/var/www/sanatan-website-v2"
 
-      # Step 11: SSH into VPS and Restart PM2 Process
       - name: Deploy (SSH) and Restart App
         uses: appleboy/ssh-action@v1
         with:
