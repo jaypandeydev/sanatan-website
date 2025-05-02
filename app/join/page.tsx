@@ -11,12 +11,13 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { CalendarIcon, CheckCircle, AlertCircle } from "lucide-react"
-import { format } from "date-fns"
+//import { format } from "date-fns"
+import dayjs from "dayjs"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { submitMembershipForm, type FormData } from "./actions"
+import type { FormData } from "./membershipTypes";
 
 export default function JoinPage() {
   const [isHydrated, setIsHydrated] = useState(false);
@@ -163,12 +164,22 @@ useEffect(() => {
     // Add dates to form data
     const formDataWithDates: FormData = {
       ...(formData as FormData),
-      dateOfBirth: dobDate ? dobDate.toISOString() : undefined,
+      dateOfBirth: dobDate ? dayjs(dobDate).toISOString() : undefined,
       dateOfApplication: applicationDate ? applicationDate.toISOString() : undefined,
+      language,
     }
 
     try {
-      const result = await submitMembershipForm(formDataWithDates)
+      //const result = await submitMembershipForm(formDataWithDates)
+      const response = await fetch("/api/membership", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formDataWithDates),
+      });
+      const result = await response.json();
+      
 
       if (result.success) {
         setFormState({
@@ -190,11 +201,12 @@ useEffect(() => {
         })
       }
     } catch (error) {
+      console.error("❌ Error submitting form:", error);
       setFormState({
         isSubmitting: false,
         isSuccess: false,
         isError: true,
-        errorMessage: t.errorMessage,
+        errorMessage: "Something went wrong. Please try again later.",//t.errorMessage,
       })
     }
   }
@@ -283,7 +295,7 @@ useEffect(() => {
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {dobDate ? format(dobDate, "PPP") : t.selectDate}
+                        {dobDate ? dayjs(dobDate).format("DD MMM YYYY") : t.selectDate}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-72 p-0 transition ease-in-out duration-300 transform origin-top scale-95 data-[state=open]:scale-100 data-[state=closed]:scale-95">
@@ -292,21 +304,22 @@ useEffect(() => {
                     selected={dobDate}
                     onSelect={setDobDate}
                     captionLayout="dropdown"
-                    fromYear={1900}
-                    toYear={new Date().getFullYear()}
-                    className="w-full bg-white rounded-lg p-4 text-center"
+                    disabled={{
+                      before: new Date(1900, 0, 1),
+                      after: new Date(),
+                    }}
                     classNames={{
-                      months: "flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0",
+                      months: "flex flex-col sm:flex-row sm:space-x-4 sm:space-y-0 space-y-4",
                       month: "space-y-4",
                       table: "w-full border-collapse space-y-1",
                       head_row: "flex",
-                      head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
-                      row: "flex w-full mt-2",
+                      head_cell: "text-red-800 font-semibold w-9 text-sm",
+                      row: "flex w-full mt-1",
                       cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-red-100",
-                      day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
-                      caption_dropdowns: "flex justify-center gap-2", // 🛑 ADD THIS
-                      caption_label: "hidden",                        // 🛑 HIDE LABEL
-                      dropdown: "rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-red-400 focus:ring-2 focus:ring-red-400", // 🛑 STYLE DROPDOWN
+                      day: "h-9 w-9 p-0 font-normal rounded-full hover:bg-red-50 aria-selected:bg-red-600 aria-selected:text-white",
+                      caption_dropdowns: "flex justify-center gap-2 items-center",
+                      dropdown: "rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-red-500",
+                      caption_label: "hidden",
                     }}
                   />
                     </PopoverContent>
@@ -494,32 +507,33 @@ useEffect(() => {
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {applicationDate ? format(applicationDate, "PPP") : t.selectDate}
+                        {applicationDate ? dayjs(applicationDate).format("DD MMM YYYY") : t.selectDate}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-72 p-0 transition ease-in-out duration-300 transform origin-top scale-95 data-[state=open]:scale-100 data-[state=closed]:scale-95">
                     <Calendar
-                      mode="single"
-                      selected={dobDate}
-                      onSelect={setDobDate}
-                      captionLayout="dropdown"
-                      fromYear={1900}
-                      toYear={new Date().getFullYear()}
-                      className="w-full bg-white rounded-lg p-4 text-center"
-                      classNames={{
-                        months: "flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0",
-                        month: "space-y-4",
-                        table: "w-full border-collapse space-y-1",
-                        head_row: "flex",
-                        head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
-                        row: "flex w-full mt-2",
-                        cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-red-100",
-                        day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
-                        caption_dropdowns: "flex justify-center gap-2", // 🛑 ADD THIS
-                        caption_label: "hidden",                        // 🛑 HIDE LABEL
-                        dropdown: "rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-red-400 focus:ring-2 focus:ring-red-400", // 🛑 STYLE DROPDOWN
-                      }}
-                    />
+                    mode="single"
+                    selected={dobDate}
+                    onSelect={setDobDate}
+                    captionLayout="dropdown"
+                    disabled={{
+                      before: new Date(1900, 0, 1),
+                      after: new Date(),
+                    }}
+                    classNames={{
+                      months: "flex flex-col sm:flex-row sm:space-x-4 sm:space-y-0 space-y-4",
+                      month: "space-y-4",
+                      table: "w-full border-collapse space-y-1",
+                      head_row: "flex",
+                      head_cell: "text-red-800 font-semibold w-9 text-sm",
+                      row: "flex w-full mt-1",
+                      cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-red-100",
+                      day: "h-9 w-9 p-0 font-normal rounded-full hover:bg-red-50 aria-selected:bg-red-600 aria-selected:text-white",
+                      caption_dropdowns: "flex justify-center gap-2 items-center",
+                      dropdown: "rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-red-500",
+                      caption_label: "hidden",
+                    }}
+                  />
                     </PopoverContent>
                   </Popover>
                   </div>
