@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,7 +11,6 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { CalendarIcon, CheckCircle, AlertCircle } from "lucide-react"
-//import { format } from "date-fns"
 import dayjs from "dayjs"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -21,16 +20,37 @@ import type { FormData } from "./membershipTypes";
 
 export default function JoinPage() {
   const [isHydrated, setIsHydrated] = useState(false);
-useEffect(() => {
-  setIsHydrated(true);
-}, []);
-useEffect(() => {
-  if (isHydrated && !applicationDate) {
-    setApplicationDate(new Date());
-  }
-}, [isHydrated]);
+  const dobRef = useRef<HTMLButtonElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
+  const sonRef = useRef<HTMLInputElement>(null);
+  const addressRef = useRef<HTMLTextAreaElement>(null);
+  const mobileRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (isHydrated && !applicationDate) {
+      setApplicationDate(new Date());
+    }
+  }, [isHydrated])
 
   const { language } = useLanguage()
+
+  useEffect(() => {
+    // Reset entire error state when language changes
+    setFormState({
+      isSubmitting: false,
+      isSuccess: false,
+      isError: false,
+      errorMessage: undefined,
+      fieldErrors: undefined,
+    });
+  }, [language]);
+  
+
   const [dobDate, setDobDate] = useState<Date | undefined>()
   const [applicationDate, setApplicationDate] = useState<Date | undefined>(undefined)
   const [formState, setFormState] = useState<{
@@ -156,60 +176,92 @@ useEffect(() => {
     setFormData((prev) => ({ ...prev, membershipType: value }))
   }
   
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setFormState({ ...formState, isSubmitting: true, isError: false, isSuccess: false })
-
-    // Add dates to form data
-    const formDataWithDates: FormData = {
-      ...(formData as FormData),
-      dateOfBirth: dobDate ? dayjs(dobDate).toISOString() : undefined,
-      dateOfApplication: applicationDate ? applicationDate.toISOString() : undefined,
-      language,
-    }
-
-    try {
-      //const result = await submitMembershipForm(formDataWithDates)
-      const response = await fetch("/api/membership", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formDataWithDates),
-      });
-      const result = await response.json();
-      
-
-      if (result.success) {
-        setFormState({
-          isSubmitting: false,
-          isSuccess: true,
-          isError: false,
-        })
-        // Reset form after successful submission
-        setFormData({ membershipType: "lifetime" })
-        setDobDate(undefined)
-        setApplicationDate(new Date())
-      } else {
-        setFormState({
-          isSubmitting: false,
-          isSuccess: false,
-          isError: true,
-          errorMessage: result.error,
-          fieldErrors: result.fieldErrors,
-        })
-      }
-    } catch (error) {
-      console.error("❌ Error submitting form:", error);
-      setFormState({
-        isSubmitting: false,
-        isSuccess: false,
-        isError: true,
-        errorMessage: "Something went wrong. Please try again later.",//t.errorMessage,
-      })
-    }
+  const validateClientSide = () => {
+    const errors: Record<string, string> = {}
+    if (!formData.name) errors.name = t.requiredField
+    if (!dobDate) errors.dateOfBirth = t.requiredField
+    if (!formData.sonDaughterOf) errors.sonDaughterOf = t.requiredField
+    if (!formData.residentialAddress) errors.residentialAddress = t.requiredField
+    if (!formData.mobileNumber) errors.mobileNumber = t.requiredField
+    if (!formData.email) errors.email = t.requiredField
+    return errors
   }
+
+  const scrollToError = (errors: Record<string, string>) => {
+    if (errors.name) nameRef.current?.focus()
+    else if (errors.dateOfBirth) dobRef.current?.focus()
+    else if (errors.sonDaughterOf) sonRef.current?.focus()
+    else if (errors.residentialAddress) addressRef.current?.focus()
+    else if (errors.mobileNumber) mobileRef.current?.focus()
+    else if (errors.email) emailRef.current?.focus()  
+    }
+      
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setFormState({ ...formState, isSubmitting: true, isError: false, isSuccess: false });
+    
+        const clientErrors = validateClientSide();
+        if (Object.keys(clientErrors).length > 0) {
+          scrollToError(clientErrors);
+          setFormState({
+            isSubmitting: false,
+            isSuccess: false,
+            isError: true,
+            errorMessage: language === "hi"
+            ? "कृपया सभी आवश्यक फ़ील्ड भरें।"
+            : "Please fill out all required fields.",
+            fieldErrors: clientErrors,
+          });
+          return;
+        }
+    
+        const formDataWithDates: FormData = {
+          ...(formData as FormData),
+          dateOfBirth: dayjs(dobDate).format("YYYY-MM-DD"),
+          dateOfApplication: applicationDate ? dayjs(applicationDate).format("YYYY-MM-DD") : undefined,
+          language,
+        }
+    
+        try {
+          const response = await fetch("/api/membership", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formDataWithDates),
+          });
+    
+          const result = await response.json();
+    
+          if (result.success) {
+            setFormState({
+              isSubmitting: false,
+              isSuccess: true,
+              isError: false,
+            });
+            setFormData({ membershipType: "lifetime" });
+            setDobDate(undefined);
+            setApplicationDate(new Date());
+          } else {
+            setFormState({
+              isSubmitting: false,
+              isSuccess: false,
+              isError: true,
+              errorMessage: result.error,
+              fieldErrors: result.fieldErrors,
+            });
+          }
+        } catch (error) {
+          console.error("❌ Error submitting form:", error);
+          setFormState({
+            isSubmitting: false,
+            isSuccess: false,
+            isError: true,
+            errorMessage: t.errorMessage,
+          });
+        }
+      }
+  
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -228,7 +280,7 @@ useEffect(() => {
               <AlertDescription className="text-green-700">{t.successMessage}</AlertDescription>
             </Alert>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-8" noValidate>
               {formState.isError && (
                 <Alert className="bg-red-50 border-red-200">
                   <AlertCircle className="h-5 w-5 text-red-600" />
@@ -274,7 +326,6 @@ useEffect(() => {
                       value={formData.name || ""}
                       onChange={handleInputChange}
                       placeholder={t.namePlaceholder}
-                      required
                       className={formState.fieldErrors?.name ? "border-red-500" : ""}
                     />
                     {formState.fieldErrors?.name && (
@@ -283,20 +334,23 @@ useEffect(() => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="dob">{t.dob}</Label>
+                    <Label htmlFor="dob" className="flex">
+                    {t.dob} <span className="text-red-500 ml-1">*</span>
+                    </Label>
                     <Popover>
                     <PopoverTrigger asChild>
-                      <Button
-                        id="dob"
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !dobDate && "text-muted-foreground",
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {dobDate ? dayjs(dobDate).format("DD MMM YYYY") : t.selectDate}
-                      </Button>
+                    <Button
+                    id="dob"
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !dobDate && "text-muted-foreground",
+                      formState.fieldErrors?.dateOfBirth && "border-red-500"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {dobDate ? dayjs(dobDate).format("DD MMM YYYY") : t.selectDate}
+                  </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-72 p-0 transition ease-in-out duration-300 transform origin-top scale-95 data-[state=open]:scale-100 data-[state=closed]:scale-95">
                     <Calendar
@@ -324,6 +378,9 @@ useEffect(() => {
                   />
                     </PopoverContent>
                   </Popover>
+                  {formState.fieldErrors?.dateOfBirth && (
+                    <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.dateOfBirth}</p>
+                  )}
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -339,14 +396,20 @@ useEffect(() => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="sonDaughterOf">{t.sonDaughterOf}</Label>
+                    <Label htmlFor="sonDaughterOf" className="flex">
+                      {t.sonDaughterOf} <span className="text-red-500 ml-1">*</span>
+                      </Label>
                     <Input
-                      id="sonDaughterOf"
-                      name="sonDaughterOf"
-                      value={formData.sonDaughterOf || ""}
-                      onChange={handleInputChange}
-                      placeholder={t.sonDaughterOfPlaceholder}
-                    />
+                    id="sonDaughterOf"
+                    name="sonDaughterOf"
+                    value={formData.sonDaughterOf || ""}
+                    onChange={handleInputChange}
+                    placeholder={t.sonDaughterOfPlaceholder}
+                    className={formState.fieldErrors?.sonDaughterOf ? "border-red-500" : ""}
+                  />
+                  {formState.fieldErrors?.sonDaughterOf && (
+                    <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.sonDaughterOf}</p>
+                  )}
                   </div>
                 </div>
 
@@ -391,7 +454,9 @@ useEffect(() => {
                 <h3 className="text-xl font-semibold text-red-800">{t.contactDetails}</h3>
 
                 <div className="space-y-2">
-                  <Label htmlFor="residentialAddress">{t.residentialAddress}</Label>
+                  <Label htmlFor="residentialAddress" className="flex">
+                    {t.residentialAddress} <span className="text-red-500 ml-1">*</span>
+                  </Label>
                   <Textarea
                     id="residentialAddress"
                     name="residentialAddress"
@@ -399,7 +464,11 @@ useEffect(() => {
                     onChange={handleInputChange}
                     placeholder={t.addressPlaceholder}
                     rows={3}
+                    className={formState.fieldErrors?.residentialAddress ? "border-red-500" : ""}
                   />
+                  {formState.fieldErrors?.residentialAddress && (
+                    <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.residentialAddress}</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -424,7 +493,6 @@ useEffect(() => {
                       value={formData.mobileNumber || ""}
                       onChange={handleInputChange}
                       placeholder={t.mobilePlaceholder}
-                      required
                       className={formState.fieldErrors?.mobileNumber ? "border-red-500" : ""}
                     />
                     {formState.fieldErrors?.mobileNumber && (
@@ -445,7 +513,6 @@ useEffect(() => {
                       value={formData.email || ""}
                       onChange={handleInputChange}
                       placeholder={t.emailPlaceholder}
-                      required
                       className={formState.fieldErrors?.email ? "border-red-500" : ""}
                     />
                     {formState.fieldErrors?.email && (

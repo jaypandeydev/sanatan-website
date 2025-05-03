@@ -1,21 +1,21 @@
+// formSchema.ts
 "use server";
 
 import { z } from "zod";
 
-// ✅ Schema used only for type inference
-const formSchema = z.object({
+export const baseSchema = z.object({
   membershipType: z.enum(["lifetime", "ordinary"]),
-  name: z.string().min(1, { message: "Name is required" }),
-  dateOfBirth: z.string().optional().nullable(),
+  name: z.string().min(1),
+  dateOfBirth: z.string().min(1),
   age: z.string().optional().nullable(),
-  sonDaughterOf: z.string().optional().nullable(),
+  sonDaughterOf: z.string().min(1),
   profession: z.string().optional().nullable(),
   designation: z.string().optional().nullable(),
   employeeNumber: z.string().optional().nullable(),
-  residentialAddress: z.string().optional().nullable(),
+  residentialAddress: z.string().min(1),
   contactPhone: z.string().optional().nullable(),
-  mobileNumber: z.string().min(1, { message: "Mobile number is required" }),
-  email: z.string().email({ message: "Invalid email address" }),
+  mobileNumber: z.string().min(1),
+  email: z.string().min(1).email(),
   fax: z.string().optional().nullable(),
   otherDetails: z.string().optional().nullable(),
   membershipNumber: z.string().optional().nullable(),
@@ -25,5 +25,4 @@ const formSchema = z.object({
   language: z.enum(["en", "hi"]).optional(),
 });
 
-// ✅ Export type only (used by frontend form)
-export type FormData = z.infer<typeof formSchema>;
+export type FormData = z.infer<typeof baseSchema>;
