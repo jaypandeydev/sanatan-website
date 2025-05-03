@@ -50,7 +50,7 @@ useEffect(() => {
 
   const content = {
     hi: {
-      title: "सदस्यता फॉर्म",
+      title: "सदस्यता निवेदन फॉर्म",
       description: "सनातन महापरिषद् भारत की सदस्यता के लिए निम्न फॉर्म भरें",
       membershipType: "सदस्यता प्रकार",
       lifetime: "आजीवन सदस्यता",
@@ -97,7 +97,7 @@ useEffect(() => {
       invalidEmail: "कृपया एक वैध ईमेल पता दर्ज करें",
     },
     en: {
-      title: "Membership Form",
+      title: "Membership request Form",
       description: "Fill the following form for membership of Sanatan Mahaparishad Bharat",
       membershipType: "Membership Type",
       lifetime: "Lifetime Membership",
