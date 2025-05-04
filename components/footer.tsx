@@ -38,7 +38,7 @@ export default function Footer() {
   const t = content[language]
 
   return (
-    <footer className="bg-orange-50 text-red-800 py-8 border-t border-orange-200">
+    <footer className="bg-orange-50 text-red-800 py-8 border-t border-orange-200 bg-transparent">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo and organization info */}

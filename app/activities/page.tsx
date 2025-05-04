@@ -99,7 +99,7 @@ export default function ActivitiesPage() {
         {t.activities.map((activity, index) => (
           <Card
             key={index}
-            className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+            className="border border-orange-200 rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden bg-white/30 backdrop-blur-sm"
           >
             <div className="relative h-48 w-full">
               <Image src={activity.image || "/placeholder.svg"} alt={activity.title} fill className="object-cover" />

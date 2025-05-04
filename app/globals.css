@@ -34,22 +34,60 @@
   --radius: 0.5rem;
 }
 
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   @apply bg-background text-foreground;
   font-family: "Poppins", "Noto Sans", sans-serif;
-  background-image: url("/images/lord-rama-background.png");
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
+  /* Background is now set in layout.tsx */
 }
 
+/* Make content wrapper very transparent */
 .content-wrapper {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(255, 255, 255, 0.4); /* Increased transparency */
   min-height: 100vh;
   width: 100%;
   position: relative;
   z-index: 1;
+}
+
+/* Make cards more transparent */
+.card,
+[class*="bg-white"] {
+  background-color: rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(2px);
+}
+
+/* Make header and footer more transparent */
+header,
+footer {
+  background-color: rgba(255, 248, 240, 0.4) !important;
+}
+
+/* Make form inputs more transparent */
+input,
+textarea,
+select {
+  background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Add text shadow for better readability against the orange background */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+li,
+a {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 @layer base {

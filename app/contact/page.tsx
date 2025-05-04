@@ -79,77 +79,77 @@ export default function ContactPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-3xl md:text-4xl font-bold text-red-800 mb-8 text-center">{t.title}</h1>
+    <h1 className="text-3xl md:text-4xl font-bold text-red-800 mb-8 text-center">{t.title}</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-        <div>
-          <h2 className="text-2xl font-bold text-red-800 mb-6">{t.contactUs.title}</h2>
-          <p className="text-gray-700 mb-8">{t.contactUs.description}</p>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+      <div className="bg-white/30 backdrop-blur-sm rounded-lg p-6">
+        <h2 className="text-2xl font-bold text-red-800 mb-6">{t.contactUs.title}</h2>
+        <p className="text-gray-700 mb-8">{t.contactUs.description}</p>
 
-          <div className="space-y-6">
-            <Card className="border border-gray-200">
-              <CardContent className="flex items-start p-6">
-                <MapPin className="h-6 w-6 text-red-700 mr-4 mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold text-lg text-red-800">{t.contactUs.address.title}</h3>
-                  <p className="text-gray-700">{t.contactUs.address.content}</p>
-                </div>
-              </CardContent>
-            </Card>
+        <div className="space-y-6">
+          <Card className="border border-orange-200 bg-white/30">
+            <CardContent className="flex items-start p-6">
+              <MapPin className="h-6 w-6 text-red-700 mr-4 mt-1 flex-shrink-0" />
+              <div>
+                <h3 className="font-semibold text-lg text-red-800">{t.contactUs.address.title}</h3>
+                <p className="text-gray-700">{t.contactUs.address.content}</p>
+              </div>
+            </CardContent>
+          </Card>
 
-            <Card className="border border-gray-200">
-              <CardContent className="flex items-start p-6">
-                <Phone className="h-6 w-6 text-red-700 mr-4 mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold text-lg text-red-800">{t.contactUs.phone.title}</h3>
-                  <p className="text-gray-700">{t.contactUs.phone.content}</p>
-                </div>
-              </CardContent>
-            </Card>
+          <Card className="border border-orange-200 bg-white/30">
+            <CardContent className="flex items-start p-6">
+              <Phone className="h-6 w-6 text-red-700 mr-4 mt-1 flex-shrink-0" />
+              <div>
+                <h3 className="font-semibold text-lg text-red-800">{t.contactUs.phone.title}</h3>
+                <p className="text-gray-700">{t.contactUs.phone.content}</p>
+              </div>
+            </CardContent>
+          </Card>
 
-            <Card className="border border-gray-200">
-              <CardContent className="flex items-start p-6">
-                <Mail className="h-6 w-6 text-red-700 mr-4 mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold text-lg text-red-800">{t.contactUs.email.title}</h3>
-                  <p className="text-gray-700">{t.contactUs.email.content}</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <Card className="border border-orange-200 bg-white/30">
+            <CardContent className="flex items-start p-6">
+              <Mail className="h-6 w-6 text-red-700 mr-4 mt-1 flex-shrink-0" />
+              <div>
+                <h3 className="font-semibold text-lg text-red-800">{t.contactUs.email.title}</h3>
+                <p className="text-gray-700">{t.contactUs.email.content}</p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
+      </div>
 
-        <div>
-          <h2 className="text-2xl font-bold text-red-800 mb-6">{t.form.title}</h2>
-          <form className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                  {t.form.name}
-                </label>
-                <Input id="name" placeholder={t.form.namePlaceholder} />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  {t.form.email}
-                </label>
-                <Input id="email" type="email" placeholder={t.form.emailPlaceholder} />
-              </div>
+      <div className="bg-white/30 backdrop-blur-sm rounded-lg p-6">
+        <h2 className="text-2xl font-bold text-red-800 mb-6">{t.form.title}</h2>
+        <form className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                {t.form.name}
+              </label>
+              <Input id="name" placeholder={t.form.namePlaceholder} className="bg-white/30" />
             </div>
             <div className="space-y-2">
-              <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
-                {t.form.subject}
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                {t.form.email}
               </label>
-              <Input id="subject" placeholder={t.form.subjectPlaceholder} />
+              <Input id="email" type="email" placeholder={t.form.emailPlaceholder} className="bg-white/30" />
             </div>
-            <div className="space-y-2">
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700">
-                {t.form.message}
-              </label>
-              <Textarea id="message" placeholder={t.form.messagePlaceholder} rows={6} />
-            </div>
-            <Button className="bg-red-700 hover:bg-red-800 text-white px-8 py-2 rounded w-full">{t.form.submit}</Button>
-          </form>
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
+              {t.form.subject}
+            </label>
+            <Input id="subject" placeholder={t.form.subjectPlaceholder} className="bg-white/30" />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+              {t.form.message}
+            </label>
+            <Textarea id="message" placeholder={t.form.messagePlaceholder} rows={6} className="bg-white/30" />
+          </div>
+          <Button className="w-full bg-red-700 hover:bg-red-800 text-white px-8 py-2 rounded">{t.form.submit}</Button>
+        </form>
         </div>
       </div>
     </div>

@@ -36,10 +36,16 @@ export default function RootLayout({
     <html lang="hi" className={`${poppins.variable} ${notoSans.variable}`}>
       <LanguageProvider>
         <body>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-grow">{children}</main>
-            <Footer />
+        <div
+            className="fixed inset-0 z-[-1] bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: "url('/images/lord-rama-background.png')" }}
+          />
+          <div className="content-wrapper">
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+            </div>
           </div>
         </body>
       </LanguageProvider>

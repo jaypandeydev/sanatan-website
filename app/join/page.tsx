@@ -265,14 +265,14 @@ export default function JoinPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <Card className="max-w-4xl mx-auto">
+      <Card className="max-w-4xl mx-auto bg-white/40 backdrop-blur-sm">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold text-red-800">{t.title}</CardTitle>
           <CardDescription className="text-lg text-gray-700 mt-2">{t.description}</CardDescription>
         </CardHeader>
         <CardContent>
           {formState.isSuccess ? (
-            <Alert className="bg-green-50 border-green-200">
+            <Alert className="bg-green-50/60 border-green-200">
               <CheckCircle className="h-5 w-5 text-green-600" />
               <AlertTitle className="text-green-800 font-medium">
                 {language === "hi" ? "सफलता!" : "Success!"}
@@ -282,7 +282,7 @@ export default function JoinPage() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-8" noValidate>
               {formState.isError && (
-                <Alert className="bg-red-50 border-red-200">
+                <Alert className="bg-red-50/60 border-red-200">
                   <AlertCircle className="h-5 w-5 text-red-600" />
                   <AlertTitle className="text-red-800 font-medium">{language === "hi" ? "त्रुटि!" : "Error!"}</AlertTitle>
                   <AlertDescription className="text-red-700">
@@ -464,7 +464,7 @@ export default function JoinPage() {
                     onChange={handleInputChange}
                     placeholder={t.addressPlaceholder}
                     rows={3}
-                    className={formState.fieldErrors?.residentialAddress ? "border-red-500" : ""}
+                    className={formState.fieldErrors?.residentialAddress ? "border-bg-white/40" : ""}
                   />
                   {formState.fieldErrors?.residentialAddress && (
                     <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.residentialAddress}</p>
@@ -513,7 +513,7 @@ export default function JoinPage() {
                       value={formData.email || ""}
                       onChange={handleInputChange}
                       placeholder={t.emailPlaceholder}
-                      className={formState.fieldErrors?.email ? "border-red-500" : ""}
+                      className={formState.fieldErrors?.email ? "border-bg-white/40" : ""}
                     />
                     {formState.fieldErrors?.email && (
                       <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.email}</p>

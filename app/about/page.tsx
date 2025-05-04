@@ -76,26 +76,28 @@ export default function AboutPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-3xl md:text-4xl font-bold text-red-800 mb-8 text-center">{t.title}</h1>
+      <div className="bg-white/30 backdrop-blur-sm rounded-lg p-8 shadow-sm">
+        <h1 className="text-3xl md:text-4xl font-bold text-red-800 mb-8 text-center">{t.title}</h1>
 
-      <div className="max-w-4xl mx-auto prose prose-lg">
-        <p className="mb-4">{t.intro}</p>
+        <div className="max-w-4xl mx-auto prose prose-lg">
+          <p className="mb-4">{t.intro}</p>
 
-        <h2 className="text-2xl font-bold text-red-800 mt-8 mb-4">{t.history.title}</h2>
-        <p className="mb-4">{t.history.content}</p>
+          <h2 className="text-2xl font-bold text-red-800 mt-8 mb-4">{t.history.title}</h2>
+          <p className="mb-4">{t.history.content}</p>
 
-        <h2 className="text-2xl font-bold text-red-800 mt-8 mb-4">{t.vision.title}</h2>
-        <p className="mb-4">{t.vision.content}</p>
+          <h2 className="text-2xl font-bold text-red-800 mt-8 mb-4">{t.vision.title}</h2>
+          <p className="mb-4">{t.vision.content}</p>
 
-        <h2 className="text-2xl font-bold text-red-800 mt-8 mb-4">{t.mission.title}</h2>
-        <p className="mb-4">{t.mission.content}</p>
+          <h2 className="text-2xl font-bold text-red-800 mt-8 mb-4">{t.mission.title}</h2>
+          <p className="mb-4">{t.mission.content}</p>
 
-        <h2 className="text-2xl font-bold text-red-800 mt-8 mb-4">{t.objectives.title}</h2>
-        <ul className="list-disc pl-6 mb-4">
-          {t.objectives.items.map((item, index) => (
-            <li key={index}>{item}</li>
-          ))}
-        </ul>
+          <h2 className="text-2xl font-bold text-red-800 mt-8 mb-4">{t.objectives.title}</h2>
+          <ul className="list-disc pl-6 mb-4">
+            {t.objectives.items.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   )

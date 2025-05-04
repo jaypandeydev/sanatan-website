@@ -20,7 +20,7 @@ export default function Header() {
   ]
 
   return (
-    <header className="w-full bg-orange-50 border-b border-orange-200">
+    <header className="w-full bg-orange-50 border-b border-orange-200 bg-transparent">
       <div className="container mx-auto px-4">
         {/* Main banner */}
         <div className="w-full flex justify-center py-2">
@@ -54,7 +54,7 @@ export default function Header() {
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="bg-orange-50">
+            <SheetContent side="right" className="bg-orange-50/70 backdrop-blur-sm">
               <div className="flex flex-col space-y-4 mt-8 text-red-800">
                 {navItems.map((item) => (
                   <Link key={item.href} href={item.href} className="text-lg hover:text-red-600 transition-colors">

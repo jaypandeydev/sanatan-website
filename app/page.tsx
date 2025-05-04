@@ -165,7 +165,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center">
       {/* Hero Section */}
-      <section className="w-full bg-orange-50 py-16 px-4">
+      <section className="w-full bg-transparent py-16 px-4">
         <div className="container mx-auto text-center">
           <h1 className="text-3xl md:text-5xl font-bold text-red-800 mb-6">{t.hero.title}</h1>
           <p className="text-lg md:text-xl text-red-700 mb-8 max-w-3xl mx-auto">{t.hero.subtitle}</p>
@@ -188,7 +188,7 @@ export default function Home() {
             {t.objectives.items.map((item, index) => (
               <Card
                 key={index}
-                className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                className="border border-orange-200 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white/40 backdrop-blur-sm"
               >
                 <CardHeader className="flex flex-col items-center pb-2">
                   {item.icon && <item.icon className="h-12 w-12 text-red-700 mb-2" />}
@@ -204,7 +204,7 @@ export default function Home() {
       </section>
 
       {/* Importance Section */}
-      <section className="w-full bg-orange-50 py-16 px-4">
+      <section className="w-full bg-transparent py-16 px-4">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row gap-12">
             <div className="w-full md:w-1/2">
@@ -240,7 +240,7 @@ export default function Home() {
             {t.events.items.map((event, index) => (
               <Card
                 key={index}
-                className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+                className="border border-orange-200 rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden bg-white/40 backdrop-blur-sm"
               >
                 <div className="relative h-48 w-full">
                   <Image src={event.image || "/placeholder.svg"} alt={event.title} fill className="object-cover" />
@@ -261,7 +261,7 @@ export default function Home() {
       </section>
 
       {/* Join Us Section */}
-      <section className="w-full bg-red-700 text-white py-16 px-4">
+      <section className="w-full bg-red-700/40 text-white py-16 px-4 backdrop-blur-sm">
         <div className="container mx-auto text-center">
           <h2 className="text-2xl md:text-4xl font-bold mb-6">{t.join.title}</h2>
           <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto">{t.join.description}</p>
