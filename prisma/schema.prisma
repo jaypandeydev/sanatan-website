@@ -30,4 +30,5 @@ model SanataniUserDetails {
   introducedBy       String?
   introducer         String?
   createdAt          DateTime @default(now())
+  membershipStatus   Boolean  @default(false)
 }

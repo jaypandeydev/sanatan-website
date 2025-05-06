@@ -197,70 +197,76 @@ export default function JoinPage() {
     }
       
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setFormState({ ...formState, isSubmitting: true, isError: false, isSuccess: false });
+      e.preventDefault();
+      setFormState({ ...formState, isSubmitting: true, isError: false, isSuccess: false });
     
-        const clientErrors = validateClientSide();
-        if (Object.keys(clientErrors).length > 0) {
-          scrollToError(clientErrors);
-          setFormState({
-            isSubmitting: false,
-            isSuccess: false,
-            isError: true,
-            errorMessage: language === "hi"
+      const clientErrors = validateClientSide();
+      if (Object.keys(clientErrors).length > 0) {
+        scrollToError(clientErrors);
+        setFormState({
+          isSubmitting: false,
+          isSuccess: false,
+          isError: true,
+          errorMessage: language === "hi"
             ? "कृपया सभी आवश्यक फ़ील्ड भरें।"
             : "Please fill out all required fields.",
-            fieldErrors: clientErrors,
+          fieldErrors: clientErrors,
+        });
+        return;
+      }
+    
+      const formDataWithDates: FormData = {
+        ...(formData as FormData),
+        dateOfBirth: dayjs(dobDate).format("YYYY-MM-DD"),
+        dateOfApplication: applicationDate ? dayjs(applicationDate).format("YYYY-MM-DD") : undefined,
+        language,
+      };
+    
+      try {
+        const response = await fetch("/api/membership", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formDataWithDates),
+        });
+    
+        const result = await response.json();
+        
+        console.log("🧾 Server Response:", result);
+
+        if (result.success) {
+          setFormState({
+            isSubmitting: false,
+            isSuccess: true,
+            isError: false,
+            fieldErrors: {}, // ✅ reset field errors
           });
-          return;
-        }
+          setFormData({ membershipType: "lifetime" });
+          setDobDate(undefined);
+          setApplicationDate(new Date());
+        } else {
+          const serverErrors = result.fieldErrors ?? {}; // ✅ fallback
+          scrollToError(serverErrors); // ✅ move focus to first invalid field
     
-        const formDataWithDates: FormData = {
-          ...(formData as FormData),
-          dateOfBirth: dayjs(dobDate).format("YYYY-MM-DD"),
-          dateOfApplication: applicationDate ? dayjs(applicationDate).format("YYYY-MM-DD") : undefined,
-          language,
-        }
-    
-        try {
-          const response = await fetch("/api/membership", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formDataWithDates),
-          });
-    
-          const result = await response.json();
-    
-          if (result.success) {
-            setFormState({
-              isSubmitting: false,
-              isSuccess: true,
-              isError: false,
-            });
-            setFormData({ membershipType: "lifetime" });
-            setDobDate(undefined);
-            setApplicationDate(new Date());
-          } else {
-            setFormState({
-              isSubmitting: false,
-              isSuccess: false,
-              isError: true,
-              errorMessage: result.error,
-              fieldErrors: result.fieldErrors,
-            });
-          }
-        } catch (error) {
-          console.error("❌ Error submitting form:", error);
           setFormState({
             isSubmitting: false,
             isSuccess: false,
             isError: true,
-            errorMessage: t.errorMessage,
+            errorMessage: result.error,
+            fieldErrors: serverErrors, // ✅ correct display under each field
           });
         }
+      } catch (error) {
+        console.error("❌ Error submitting form:", error);
+        setFormState({
+          isSubmitting: false,
+          isSuccess: false,
+          isError: true,
+          errorMessage: t.errorMessage,
+        });
       }
+    };
   
 
   return (
@@ -281,15 +287,21 @@ export default function JoinPage() {
             </Alert>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-8" noValidate>
-              {formState.isError && (
-                <Alert className="bg-red-50/60 border-red-200">
-                  <AlertCircle className="h-5 w-5 text-red-600" />
-                  <AlertTitle className="text-red-800 font-medium">{language === "hi" ? "त्रुटि!" : "Error!"}</AlertTitle>
-                  <AlertDescription className="text-red-700">
-                    {formState.errorMessage || t.errorMessage}
-                  </AlertDescription>
-                </Alert>
-              )}
+            {formState.isError && (
+              <Alert className="bg-red-50/60 border-red-200">
+                <AlertCircle className="h-5 w-5 text-red-600" />
+                <AlertTitle className="text-red-800 font-medium">{language === "hi" ? "त्रुटि!" : "Error!"}</AlertTitle>
+                <AlertDescription className="text-red-700">
+                  {
+                    Object.keys(formState.fieldErrors || {}).length > 0
+                      ? language === "hi"
+                        ? "कृपया नीचे दिखाए गए फ़ील्ड में सुधार करें।"
+                        : "Please correct the fields highlighted below."
+                      : formState.errorMessage || t.errorMessage
+                  }
+                </AlertDescription>
+              </Alert>
+            )}
 
               {/* Membership Type */}
               <div className="space-y-4">
@@ -327,6 +339,7 @@ export default function JoinPage() {
                       onChange={handleInputChange}
                       placeholder={t.namePlaceholder}
                       className={formState.fieldErrors?.name ? "border-red-500" : ""}
+                      required
                     />
                     {formState.fieldErrors?.name && (
                       <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.name}</p>

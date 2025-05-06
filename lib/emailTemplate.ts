@@ -1,6 +1,6 @@
 export function getEmailContent(language: string, name: string): string {
   const logoUrl =
-    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/new%20logo-22Z6C8rDLhWgn5zxYjZhcrU29cavNW.png";
+    "/images/logo.png";
 
   if (language === "en") {
     return `

@@ -13,16 +13,18 @@ if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
 // ✅ Zod schema
 const formSchema = z.object({
   membershipType: z.enum(["lifetime", "ordinary"]),
-  name: z.string().min(1, { message: "Name is required" }),
+  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
   dateOfBirth: z.string().optional().nullable(),
   age: z.string().optional().nullable(),
   sonDaughterOf: z.string().optional().nullable(),
   profession: z.string().optional().nullable(),
   designation: z.string().optional().nullable(),
   employeeNumber: z.string().optional().nullable(),
-  residentialAddress: z.string().optional().nullable(),
+  residentialAddress: z.string().min(5, { message: "Address must be at least 5 characters" }),
   contactPhone: z.string().optional().nullable(),
-  mobileNumber: z.string().min(1, { message: "Mobile number is required" }),
+  mobileNumber: z.string()
+  .min(10, { message: "Mobile number must be at least 10 digits" })
+  .regex(/^[0-9+\s-]+$/, { message: "Invalid mobile number format" }),
   email: z.string().email({ message: "Invalid email address" }),
   fax: z.string().optional().nullable(),
   otherDetails: z.string().optional().nullable(),
@@ -49,8 +51,11 @@ const transporter = nodemailer.createTransport({
 
 // ✅ POST handler
 export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
+  
+  let body: any;
+
+  try {   
+    body = await req.json(); // ✅ Read only once and store 
     const validatedData = formSchema.parse(body);
 
     const dateOfBirth = validatedData.dateOfBirth ? new Date(validatedData.dateOfBirth) : null;
@@ -122,13 +127,33 @@ export async function POST(req: NextRequest) {
     console.error("❌ Error:", error);
 
     if (error instanceof z.ZodError) {
-      const language = (await req.json())?.language ?? "en";
-      const fieldErrors = getLocalizedErrors(error.format(), language);
+      const language = body?.language ?? "en";
+    
+      // Convert Zod formatted error to field-error map
+      const formatted = error.format();
+      const fieldErrors: Record<string, string> = {};
+      
+      for (const key of Object.keys(formatted)) {
+        if (key === "_errors") continue;
+      
+        const field = formatted[key as keyof typeof formatted];
+        const fieldCast = field as unknown as { _errors: string[] };
+      
+        if (fieldCast._errors && fieldCast._errors.length > 0) {
+          fieldErrors[key] = fieldCast._errors[0];
+        }
+      }
+    
+      console.log("📤 Sending fieldErrors:", fieldErrors);
     
       return NextResponse.json(
         {
           success: false,
-          error: language === "hi" ? "कृपया सभी आवश्यक फ़ील्ड भरें।" : "Please fill all required fields.",
+          error: Object.keys(fieldErrors).length === 0
+            ? (language === "hi"
+                ? "कृपया सभी आवश्यक फ़ील्ड भरें।"
+                : "Please fill all required fields.")
+            : "", // show empty string to suppress generic error if detailed errors exist
           fieldErrors,
         },
         { status: 400 }

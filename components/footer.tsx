@@ -44,7 +44,7 @@ export default function Footer() {
           {/* Logo and organization info */}
           <div className="flex flex-col items-center md:items-start">
             <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/new%20logo-22Z6C8rDLhWgn5zxYjZhcrU29cavNW.png"
+              src="/images/logo.png"
               alt="Sanatan Mahaparishad Logo"
               width={120}
               height={120}
