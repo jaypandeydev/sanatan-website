@@ -1,6 +1,6 @@
 export function getEmailContent(language: string, name: string): string {
   const logoUrl =
-    "/images/logo.png";
+    "https://sanatanmahaparishad.org/images/logo.png";
 
   if (language === "en") {
     return `
