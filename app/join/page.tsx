@@ -51,7 +51,6 @@ export default function JoinPage() {
   }, [language]);
   
 
-  const [dobDate, setDobDate] = useState<Date | undefined>()
   const [applicationDate, setApplicationDate] = useState<Date | undefined>(undefined)
   const [formState, setFormState] = useState<{
     isSubmitting: boolean
@@ -87,8 +86,8 @@ export default function JoinPage() {
       professionPlaceholder: "अपना व्यवसाय दर्ज करें",
       designation: "पद",
       designationPlaceholder: "अपना पद दर्ज करें",
-      number: "संख्या",
-      numberPlaceholder: "कर्मचारी आईडी/अन्य (यदि कोई हो)",
+      number: "पहचान पत्र संख्या",
+      numberPlaceholder: "पहचान पत्र संख्या दर्ज करें (यदि कोई हो)",
       contactDetails: "संपर्क विवरण",
       residentialAddress: "निवास का पता",
       addressPlaceholder: "अपना पूरा पता दर्ज करें",
@@ -134,8 +133,8 @@ export default function JoinPage() {
       professionPlaceholder: "Enter your profession",
       designation: "Designation",
       designationPlaceholder: "Enter your designation",
-      number: "Number",
-      numberPlaceholder: "Employee ID/other (if any)",
+      number: "Identity card number",
+      numberPlaceholder: "Enter identity card number (if any)",
       contactDetails: "Contact Details",
       residentialAddress: "Residential Address",
       addressPlaceholder: "Enter your complete address",
@@ -168,9 +167,9 @@ export default function JoinPage() {
   const t = content[language]
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleRadioChange = (value: "lifetime" | "ordinary") => {
     setFormData((prev) => ({ ...prev, membershipType: value }))
@@ -179,7 +178,7 @@ export default function JoinPage() {
   const validateClientSide = () => {
     const errors: Record<string, string> = {}
     if (!formData.name) errors.name = t.requiredField
-    if (!dobDate) errors.dateOfBirth = t.requiredField
+    if (!formData.dateOfBirth) errors.dateOfBirth = t.requiredField
     if (!formData.sonDaughterOf) errors.sonDaughterOf = t.requiredField
     if (!formData.residentialAddress) errors.residentialAddress = t.requiredField
     if (!formData.mobileNumber) errors.mobileNumber = t.requiredField
@@ -217,7 +216,7 @@ export default function JoinPage() {
     
       const formDataWithDates: FormData = {
         ...(formData as FormData),
-        dateOfBirth: dayjs(dobDate).format("YYYY-MM-DD"),
+        dateOfBirth: formData.dateOfBirth,
         dateOfApplication: applicationDate ? dayjs(applicationDate).format("YYYY-MM-DD") : undefined,
         language,
       };
@@ -243,7 +242,6 @@ export default function JoinPage() {
             fieldErrors: {}, // ✅ reset field errors
           });
           setFormData({ membershipType: "lifetime" });
-          setDobDate(undefined);
           setApplicationDate(new Date());
         } else {
           const serverErrors = result.fieldErrors ?? {}; // ✅ fallback
@@ -292,13 +290,9 @@ export default function JoinPage() {
                 <AlertCircle className="h-5 w-5 text-red-600" />
                 <AlertTitle className="text-red-800 font-medium">{language === "hi" ? "त्रुटि!" : "Error!"}</AlertTitle>
                 <AlertDescription className="text-red-700">
-                  {
-                    Object.keys(formState.fieldErrors || {}).length > 0
-                      ? language === "hi"
-                        ? "कृपया नीचे दिखाए गए फ़ील्ड में सुधार करें।"
-                        : "Please correct the fields highlighted below."
-                      : formState.errorMessage || t.errorMessage
-                  }
+                  {Object.keys(formState.fieldErrors || {}).length > 0
+                    ? null
+                    : formState.errorMessage || t.errorMessage}
                 </AlertDescription>
               </Alert>
             )}
@@ -329,115 +323,33 @@ export default function JoinPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="flex">
-                      {t.name} <span className="text-red-500 ml-1">*</span>
-                    </Label>
+                    <Label htmlFor="name">{t.name} <span className="text-red-500">*</span></Label>
                     <Input
                       id="name"
                       name="name"
                       value={formData.name || ""}
                       onChange={handleInputChange}
                       placeholder={t.namePlaceholder}
-                      className={formState.fieldErrors?.name ? "border-red-500" : ""}
                       required
+                      className={formState.fieldErrors?.name ? "border-red-500" : ""}
                     />
-                    {formState.fieldErrors?.name && (
-                      <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.name}</p>
-                    )}
+                    {formState.fieldErrors?.name && <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.name}</p>}
                   </div>
-
                   <div className="space-y-2">
-                    <Label htmlFor="dob" className="flex">
-                    {t.dob} <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <Popover>
-                    <PopoverTrigger asChild>
-                    <Button
-                    id="dob"
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !dobDate && "text-muted-foreground",
-                      formState.fieldErrors?.dateOfBirth && "border-red-500"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {dobDate ? dayjs(dobDate).format("DD MMM YYYY") : t.selectDate}
-                  </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-72 p-0 transition ease-in-out duration-300 transform origin-top scale-95 data-[state=open]:scale-100 data-[state=closed]:scale-95">
-                    <Calendar
-                    mode="single"
-                    selected={dobDate}
-                    onSelect={setDobDate}
-                    captionLayout="dropdown"
-                    disabled={{
-                      before: new Date(1900, 0, 1),
-                      after: new Date(),
-                    }}
-                    classNames={{
-                      months: "flex flex-col sm:flex-row sm:space-x-4 sm:space-y-0 space-y-4",
-                      month: "space-y-4",
-                      table: "w-full border-collapse space-y-1",
-                      head_row: "flex",
-                      head_cell: "text-red-800 font-semibold w-9 text-sm",
-                      row: "flex w-full mt-1",
-                      cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-red-100",
-                      day: "h-9 w-9 p-0 font-normal rounded-full hover:bg-red-50 aria-selected:bg-red-600 aria-selected:text-white",
-                      caption_dropdowns: "flex justify-center gap-2 items-center",
-                      dropdown: "rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-red-500",
-                      caption_label: "hidden",
-                    }}
-                  />
-                    </PopoverContent>
-                  </Popover>
-                  {formState.fieldErrors?.dateOfBirth && (
-                    <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.dateOfBirth}</p>
-                  )}
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="age">{t.age}</Label>
+                    <Label htmlFor="dateOfBirth">{t.dob} <span className="text-red-500">*</span></Label>
                     <Input
-                      id="age"
-                      name="age"
-                      value={formData.age || ""}
+                      type="date"
+                      id="dateOfBirth"
+                      name="dateOfBirth"
+                      value={formData.dateOfBirth || ""}
                       onChange={handleInputChange}
-                      placeholder={t.agePlaceholder}
+                      required
+                      max={new Date().toISOString().split('T')[0]}
+                      onKeyDown={e => e.preventDefault()}
+                      className={formState.fieldErrors?.dateOfBirth ? "border-red-500" : ""}
                     />
+                    {formState.fieldErrors?.dateOfBirth && <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.dateOfBirth}</p>}
                   </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="sonDaughterOf" className="flex">
-                      {t.sonDaughterOf} <span className="text-red-500 ml-1">*</span>
-                      </Label>
-                    <Input
-                    id="sonDaughterOf"
-                    name="sonDaughterOf"
-                    value={formData.sonDaughterOf || ""}
-                    onChange={handleInputChange}
-                    placeholder={t.sonDaughterOfPlaceholder}
-                    className={formState.fieldErrors?.sonDaughterOf ? "border-red-500" : ""}
-                  />
-                  {formState.fieldErrors?.sonDaughterOf && (
-                    <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.sonDaughterOf}</p>
-                  )}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="profession">{t.profession}</Label>
-                    <Input
-                      id="profession"
-                      name="profession"
-                      value={formData.profession || ""}
-                      onChange={handleInputChange}
-                      placeholder={t.professionPlaceholder}
-                    />
-                  </div>
-
                   <div className="space-y-2">
                     <Label htmlFor="designation">{t.designation}</Label>
                     <Input
@@ -448,17 +360,39 @@ export default function JoinPage() {
                       placeholder={t.designationPlaceholder}
                     />
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="employeeNumber">{t.number}</Label>
-                  <Input
-                    id="employeeNumber"
-                    name="employeeNumber"
-                    value={formData.employeeNumber || ""}
-                    onChange={handleInputChange}
-                    placeholder={t.numberPlaceholder}
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="sonDaughterOf">{t.sonDaughterOf} <span className="text-red-500">*</span></Label>
+                    <Input
+                      id="sonDaughterOf"
+                      name="sonDaughterOf"
+                      value={formData.sonDaughterOf || ""}
+                      onChange={handleInputChange}
+                      placeholder={t.sonDaughterOfPlaceholder}
+                      required
+                      className={formState.fieldErrors?.sonDaughterOf ? "border-red-500" : ""}
+                    />
+                    {formState.fieldErrors?.sonDaughterOf && <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.sonDaughterOf}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="profession">{t.profession}</Label>
+                    <Input
+                      id="profession"
+                      name="profession"
+                      value={formData.profession || ""}
+                      onChange={handleInputChange}
+                      placeholder={t.professionPlaceholder}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="employeeNumber">{t.number}</Label>
+                    <Input
+                      id="employeeNumber"
+                      name="employeeNumber"
+                      value={formData.employeeNumber || ""}
+                      onChange={handleInputChange}
+                      placeholder={t.numberPlaceholder}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -477,7 +411,8 @@ export default function JoinPage() {
                     onChange={handleInputChange}
                     placeholder={t.addressPlaceholder}
                     rows={3}
-                    className={formState.fieldErrors?.residentialAddress ? "border-bg-white/40" : ""}
+                    className={formState.fieldErrors?.residentialAddress ? "border-red-500" : ""}
+                    required
                   />
                   {formState.fieldErrors?.residentialAddress && (
                     <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.residentialAddress}</p>
@@ -495,53 +430,31 @@ export default function JoinPage() {
                       placeholder={t.phonePlaceholder}
                     />
                   </div>
-
                   <div className="space-y-2">
-                    <Label htmlFor="mobileNumber" className="flex">
-                      {t.mobile} <span className="text-red-500 ml-1">*</span>
-                    </Label>
+                    <Label htmlFor="mobileNumber">{t.mobile} <span className="text-red-500">*</span></Label>
                     <Input
                       id="mobileNumber"
                       name="mobileNumber"
                       value={formData.mobileNumber || ""}
                       onChange={handleInputChange}
                       placeholder={t.mobilePlaceholder}
+                      required
                       className={formState.fieldErrors?.mobileNumber ? "border-red-500" : ""}
                     />
-                    {formState.fieldErrors?.mobileNumber && (
-                      <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.mobileNumber}</p>
-                    )}
+                    {formState.fieldErrors?.mobileNumber && <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.mobileNumber}</p>}
                   </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="flex">
-                      {t.email} <span className="text-red-500 ml-1">*</span>
-                    </Label>
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="email">{t.email} <span className="text-red-500">*</span></Label>
                     <Input
                       id="email"
                       name="email"
-                      type="email"
                       value={formData.email || ""}
                       onChange={handleInputChange}
                       placeholder={t.emailPlaceholder}
-                      className={formState.fieldErrors?.email ? "border-bg-white/40" : ""}
+                      required
+                      className={formState.fieldErrors?.email ? "border-red-500" : ""}
                     />
-                    {formState.fieldErrors?.email && (
-                      <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.email}</p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="fax">{t.fax}</Label>
-                    <Input
-                      id="fax"
-                      name="fax"
-                      value={formData.fax || ""}
-                      onChange={handleInputChange}
-                      placeholder={t.faxPlaceholder}
-                    />
+                    {formState.fieldErrors?.email && <p className="text-red-500 text-sm mt-1">{formState.fieldErrors.email}</p>}
                   </div>
                 </div>
               </div>
@@ -593,8 +506,8 @@ export default function JoinPage() {
                     <PopoverContent className="w-72 p-0 transition ease-in-out duration-300 transform origin-top scale-95 data-[state=open]:scale-100 data-[state=closed]:scale-95">
                     <Calendar
                     mode="single"
-                    selected={dobDate}
-                    onSelect={setDobDate}
+                    selected={applicationDate}
+                    onSelect={setApplicationDate}
                     captionLayout="dropdown"
                     disabled={{
                       before: new Date(1900, 0, 1),
@@ -665,3 +578,4 @@ export default function JoinPage() {
     </div>
   )
 }
+

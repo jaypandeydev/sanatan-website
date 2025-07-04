@@ -27,6 +27,9 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
+      - name: Install jspdf-autotable
+        run: npm install jspdf-autotable
+
       - name: Upload files to VPS
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -59,5 +62,9 @@ jobs:
           script: |
             cd /var/www/sanatan-website-v2
             rm -rf node_modules
-            npm install --omit=dev
+            npx prisma migrate deploy
+            npx prisma generate
             pm2 restart sanatan-website
+      - name: Verify Deployment
+        run: curl -f https://sanatanmahaparishad.org/api/health
+

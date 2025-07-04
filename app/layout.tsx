@@ -34,6 +34,51 @@ export default function RootLayout({
 }) {
   return (
     <html lang="hi" className={`${poppins.variable} ${notoSans.variable}`}>
+      <head>
+        <title>सनातन महापरिषद् भारत | Sanatan Mahaparishad Bharat</title>
+        <meta name="description" content="भारतीय संस्कृति और सनातन धर्म की रक्षा के लिए समर्पित संस्था | An organization dedicated to the protection of Indian culture and Sanatan Dharma" />
+        <meta name="keywords" content="Sanatan Dharma, Hinduism, सनातन धर्म, Indian Culture, Spirituality, Religion, Gita, Ramayana, Mahabharata, Bhakti, Hindu Festivals, Vedanta, Yoga, Meditation, धर्म, भारतीय संस्कृति, वेद, उपनिषद, भगवद गीता, रामायण, महाभारत, पूजा, साधना" />
+        <link rel="canonical" href="https://sanatanmahaparishad.org/" />
+        {/* Open Graph tags */}
+        <meta property="og:title" content="सनातन महापरिषद् भारत | Sanatan Mahaparishad Bharat" />
+        <meta property="og:description" content="भारतीय संस्कृति और सनातन धर्म की रक्षा के लिए समर्पित संस्था | An organization dedicated to the protection of Indian culture and Sanatan Dharma" />
+        <meta property="og:image" content="/images/logo.png" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://sanatanmahaparishad.org/" />
+        {/* Twitter Card tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="सनातन महापरिषद् भारत | Sanatan Mahaparishad Bharat" />
+        <meta name="twitter:description" content="भारतीय संस्कृति और सनातन धर्म की रक्षा के लिए समर्पित संस्था | An organization dedicated to the protection of Indian culture and Sanatan Dharma" />
+        <meta name="twitter:image" content="/images/logo.png" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: `{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "सनातन महापरिषद् भारत | Sanatan Mahaparishad Bharat",
+          "alternateName": "Sanatan Mahaparishad Bharat",
+          "url": "https://sanatanmahaparishad.org/",
+          "logo": "https://sanatanmahaparishad.org/images/logo.png",
+          "description": "भारतीय संस्कृति और सनातन धर्म की रक्षा के लिए समर्पित संस्था | An organization dedicated to the protection of Indian culture and Sanatan Dharma",
+          "sameAs": [
+            "https://www.facebook.com/sanatanmahaparishad/",
+            "https://www.instagram.com/sanatanmahaparishad/"
+          ],
+          "contactPoint": [{
+            "@type": "ContactPoint",
+            "telephone": "+91-9876543210",
+            "contactType": "customer service",
+            "areaServed": "IN",
+            "availableLanguage": ["Hindi", "English"]
+          }],
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Gyan Sarovar Vidyalaya, Near Gandhi Park, Mukhavat Yojana",
+            "addressLocality": "Lucknow",
+            "addressRegion": "UP",
+            "postalCode": "226029",
+            "addressCountry": "IN"
+          }
+        }` }} />
+      </head>
       <LanguageProvider>
         <body>
         <div

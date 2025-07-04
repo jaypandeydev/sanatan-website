@@ -1,34 +1,65 @@
-// prisma/schema.prisma
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
-model SanataniUserDetails {
+enum OfficialLevel {
+  NATIONAL
+  STATE
+  DISTRICT
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String @unique
+  password String
+}
+
+model Official {
+  id          Int    @id @default(autoincrement())
+  name        String
+  designation String
+  address     String
+  phone       String?
+  email       String?
+  imagePath   String?
+  level       OfficialLevel @default(NATIONAL)
+  state       String?
+  district    String?
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model Members {
   id                 Int      @id @default(autoincrement())
-  membershipType     String
-  fullName           String
-  dateOfBirth        DateTime?
-  age                String?
-  sonDaughterOf      String?
+  membershipType     String?
+  fullName           String   // required
+  dateOfBirth        DateTime // required
+  sonDaughterOf      String   // required
   profession         String?
   designation        String?
-  employeeNumber     String?
-  residentialAddress String?
+  identityCardNumber String?
+  residentialAddress String   // required
   contactPhone       String?
-  mobileNumber       String
-  email              String   @unique
-  fax                String?
+  mobileNumber       String   // required
+  email              String   @unique // required and unique
   otherDetails       String?
   membershipNumber   String?
   dateOfApplication  DateTime?
   introducedBy       String?
   introducer         String?
-  createdAt          DateTime @default(now())
-  membershipStatus   Boolean  @default(false)
-}
+  createdAt          DateTime?
+  membershipStatus   String?
+} 

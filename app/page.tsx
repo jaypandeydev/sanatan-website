@@ -6,9 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Shield, BookOpen, Landmark } from "lucide-react"
 import { useLanguage } from "@/contexts/LanguageContext"
 import Link from "next/link"
+import { useState } from "react"
+import { Input } from "@/components/ui/input"
 
 export default function Home() {
   const { language } = useLanguage()
+  const [newsletterEmail, setNewsletterEmail] = useState("")
+  const [newsletterSuccess, setNewsletterSuccess] = useState(false)
 
   const content = {
     hi: {
@@ -162,6 +166,28 @@ export default function Home() {
 
   const t = content[language]
 
+  const dailyWisdom = {
+    hi: {
+      quote: "एकं सत् विप्रा बहुधा वदन्ति – सत्य एक है, ज्ञानी उसे अनेक नामों से पुकारते हैं।",
+      source: "ऋग्वेद",
+    },
+    en: {
+      quote: "Ekam sat vipra bahudha vadanti – Truth is one, the wise call it by many names.",
+      source: "Rig Veda",
+    },
+  };
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newsletterEmail) {
+      // Here you would send the email to your backend or service
+      setNewsletterSuccess(true);
+      setNewsletterEmail("");
+      // For now, just log
+      console.log("Newsletter signup:", newsletterEmail);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center">
       {/* Hero Section */}
@@ -177,6 +203,59 @@ export default function Home() {
               {t.hero.cta2}
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* Daily Wisdom Section */}
+      <section className="w-full py-4 px-4">
+        <div className="container mx-auto flex justify-center">
+          <Card className="max-w-2xl w-full bg-yellow-50/80 border-yellow-200 shadow-md">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xl font-bold text-yellow-800 text-center">
+                {language === "hi" ? "दैनिक ज्ञान" : "Daily Wisdom"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-lg text-yellow-900 text-center font-serif mb-2">“{dailyWisdom[language].quote}”</p>
+              <p className="text-right text-yellow-700 italic">— {dailyWisdom[language].source}</p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Newsletter Signup Section */}
+      <section className="w-full py-4 px-4">
+        <div className="container mx-auto flex justify-center">
+          <Card className="max-w-2xl w-full bg-white/80 border-orange-200 shadow-md">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xl font-bold text-red-800 text-center">
+                {language === "hi" ? "न्यूज़लेटर सदस्यता" : "Newsletter Signup"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {newsletterSuccess ? (
+                <div className="text-green-700 text-center font-medium py-2">
+                  {language === "hi"
+                    ? "सफलतापूर्वक सदस्यता ली गई! धन्यवाद।"
+                    : "Successfully subscribed! Thank you."}
+                </div>
+              ) : (
+                <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-2 items-center justify-center">
+                  <Input
+                    type="email"
+                    required
+                    placeholder={language === "hi" ? "अपना ईमेल दर्ज करें..." : "Enter your email..."}
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    className="max-w-xs"
+                  />
+                  <Button type="submit" className="bg-red-700 hover:bg-red-800 text-white px-6 py-2 rounded">
+                    {language === "hi" ? "सब्सक्राइब करें" : "Subscribe"}
+                  </Button>
+                </form>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </section>
 

@@ -38,6 +38,8 @@ export default function ContactPage() {
         namePlaceholder: "अपना नाम दर्ज करें",
         email: "ईमेल",
         emailPlaceholder: "अपना ईमेल दर्ज करें",
+        phone: "फोन (वैकल्पिक)",
+        phonePlaceholder: "अपना फोन नंबर दर्ज करें",
         subject: "विषय",
         subjectPlaceholder: "संदेश का विषय दर्ज करें",
         message: "संदेश",
@@ -71,6 +73,8 @@ export default function ContactPage() {
         namePlaceholder: "Enter your name",
         email: "Email",
         emailPlaceholder: "Enter your email",
+        phone: "Phone (optional)",
+        phonePlaceholder: "Enter your phone number",
         subject: "Subject",
         subjectPlaceholder: "Enter the subject of your message",
         message: "Message",
@@ -82,11 +86,42 @@ export default function ContactPage() {
 
   const t = content[language];
 
-  const [formData, setFormData] = useState({ name: "" });
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", message: "" });
+  const [formLoading, setFormLoading] = useState(false);
+  const [formSuccess, setFormSuccess] = useState("");
+  const [formError, setFormError] = useState("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormLoading(true);
+    setFormSuccess("");
+    setFormError("");
+    if (!formData.name || !formData.email || !formData.message) {
+      setFormError("Please fill all required fields.");
+      setFormLoading(false);
+      return;
+    }
+    try {
+      const res = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        setFormSuccess("Message sent successfully!");
+        setFormData({ name: "", email: "", phone: "", message: "" });
+      } else {
+        setFormError("Failed to send message.");
+      }
+    } catch {
+      setFormError("Failed to send message.");
+    }
+    setFormLoading(false);
   };
 
   return (
@@ -131,7 +166,7 @@ export default function ContactPage() {
 
         <div className="bg-white/30 backdrop-blur-sm rounded-lg p-6">
           <h2 className="text-2xl font-bold text-red-800 mb-6">{t.form.title}</h2>
-          <form className="space-y-6" noValidate>
+          <form className="space-y-6" noValidate onSubmit={handleSubmit}>
             <div className="space-y-2">
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                 {t.form.name}
@@ -145,6 +180,51 @@ export default function ContactPage() {
                 required
               />
             </div>
+            <div className="space-y-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                {t.form.email}
+              </label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder={t.form.emailPlaceholder}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                {t.form.phone}
+              </label>
+              <Input
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder={t.form.phonePlaceholder || "Phone (optional)"}
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+                {t.form.message}
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                value={formData.message}
+                onChange={handleInputChange}
+                placeholder={t.form.messagePlaceholder || "Your message..."}
+                required
+                className="w-full min-h-[120px] rounded border border-orange-200 bg-white/90 p-2"
+              />
+            </div>
+            {formSuccess && <div className="text-green-700 font-medium">{formSuccess}</div>}
+            {formError && <div className="text-red-700 font-medium">{formError}</div>}
+            <button type="submit" className="px-4 py-2 bg-red-700 text-white rounded hover:bg-red-800 text-sm font-medium" disabled={formLoading}>
+              {formLoading ? "Sending..." : t.form.submit}
+            </button>
           </form>
         </div>
       </div>

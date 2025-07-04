@@ -15,7 +15,6 @@ const formSchema = z.object({
   membershipType: z.enum(["lifetime", "ordinary"]),
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
   dateOfBirth: z.string().optional().nullable(),
-  age: z.string().optional().nullable(),
   sonDaughterOf: z.string().optional().nullable(),
   profession: z.string().optional().nullable(),
   designation: z.string().optional().nullable(),
@@ -26,7 +25,6 @@ const formSchema = z.object({
   .min(10, { message: "Mobile number must be at least 10 digits" })
   .regex(/^[0-9+\s-]+$/, { message: "Invalid mobile number format" }),
   email: z.string().email({ message: "Invalid email address" }),
-  fax: z.string().optional().nullable(),
   otherDetails: z.string().optional().nullable(),
   membershipNumber: z.string().optional().nullable(),
   dateOfApplication: z.string().optional().nullable(),
@@ -51,10 +49,8 @@ const transporter = nodemailer.createTransport({
 
 // ✅ POST handler
 export async function POST(req: NextRequest) {
-  
   let body: any;
-
-  try {   
+  try {
     body = await req.json(); // ✅ Read only once and store 
     const validatedData = formSchema.parse(body);
 
@@ -64,7 +60,7 @@ export async function POST(req: NextRequest) {
       : new Date();
 
     // 🔍 Check if email already registered
-    const existingUser = await prisma.sanataniUserDetails.findUnique({
+    const existingUser = await prisma.members.findUnique({
       where: { email: validatedData.email },
     });
 
@@ -76,12 +72,11 @@ export async function POST(req: NextRequest) {
     }
 
     // ✅ Save to DB
-    const newUser = await prisma.sanataniUserDetails.create({
+    const newUser = await prisma.members.create({
       data: {
         membershipType: validatedData.membershipType,
         fullName: validatedData.name,
         dateOfBirth,
-        age: validatedData.age,
         sonDaughterOf: validatedData.sonDaughterOf,
         profession: validatedData.profession,
         designation: validatedData.designation,
@@ -90,12 +85,13 @@ export async function POST(req: NextRequest) {
         contactPhone: validatedData.contactPhone,
         mobileNumber: validatedData.mobileNumber,
         email: validatedData.email,
-        fax: validatedData.fax,
         otherDetails: validatedData.otherDetails,
         membershipNumber: validatedData.membershipNumber,
         dateOfApplication,
         introducedBy: validatedData.introducedBy,
         introducer: validatedData.introducer,
+        createdAt: new Date(),
+        membershipStatus: null,
       },
     });
 
@@ -116,55 +112,16 @@ export async function POST(req: NextRequest) {
       console.warn("⚠️ Email may not have been delivered");
     }
 
-    //return NextResponse.json({ success: true, data: newUser });
     return NextResponse.json({
       success: true,
       message: "Registration successful. Welcome email sent.",
       data: newUser,
     });
-
   } catch (error: any) {
-    console.error("❌ Error:", error);
-
-    if (error instanceof z.ZodError) {
-      const language = body?.language ?? "en";
-    
-      // Convert Zod formatted error to field-error map
-      const formatted = error.format();
-      const fieldErrors: Record<string, string> = {};
-      
-      for (const key of Object.keys(formatted)) {
-        if (key === "_errors") continue;
-      
-        const field = formatted[key as keyof typeof formatted];
-        const fieldCast = field as unknown as { _errors: string[] };
-      
-        if (fieldCast._errors && fieldCast._errors.length > 0) {
-          fieldErrors[key] = fieldCast._errors[0];
-        }
-      }
-    
-      console.log("📤 Sending fieldErrors:", fieldErrors);
-    
-      return NextResponse.json(
-        {
-          success: false,
-          error: Object.keys(fieldErrors).length === 0
-            ? (language === "hi"
-                ? "कृपया सभी आवश्यक फ़ील्ड भरें।"
-                : "Please fill all required fields.")
-            : "", // show empty string to suppress generic error if detailed errors exist
-          fieldErrors,
-        },
-        { status: 400 }
-      );
-    }
-
-    // Optional: verify SMTP config once
-    transporter.verify((err) => {
-      if (err) console.error("SMTP Config Error:", err);
-    });
-
-    return NextResponse.json({ success: false, error: "Server Error" }, { status: 500 });
-  }  
+    console.error("❌ Error in membership registration:", error);
+    return NextResponse.json({
+      success: false,
+      error: error.message || "An error occurred during registration.",
+    }, { status: 500 });
+  }
 }
