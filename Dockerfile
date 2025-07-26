@@ -23,4 +23,4 @@ ENV PORT=3000
 EXPOSE $PORT
 
 # Start: run migrations then start app
-CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]
+CMD ["npm", "start"]
