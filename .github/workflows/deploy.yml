@@ -22,7 +22,7 @@ jobs:
 
       - name: Deploy via SSH
         run: |
-          ssh root@<YOUR_VPS_IP> << 'EOF'
+          ssh root@147.93.106.12 << 'EOF'
             cd /root/sanatan-website
             git pull origin main
             npm install
