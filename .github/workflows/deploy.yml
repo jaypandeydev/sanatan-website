@@ -6,66 +6,26 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Clean workspace (Forceful)
-        run: rm -rf node_modules .next tsconfig.json package-lock.json yarn.lock
-
-      - name: Install dependencies (Clean Install)
-        run: npm install
-
-      - name: Clean Next.js build cache
-        run: rm -rf .next/cache
-
-      - name: Build Next.js app
-        run: npm run build
-
-      - name: Install jspdf-autotable
-        run: npm install jspdf-autotable
-
-      - name: Upload files to VPS
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_PRIVATE_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
-          source: >
-            .next/**,
-            public/**,
-            package.json,
-            package-lock.json,
-            ecosystem.config.js,
-            app/**,
-            components/**,
-            contexts/**,
-            lib/**,
-            prisma/**,
-            tsconfig.json,
-            .env
-          target: "/var/www/sanatan-website-v2"
-
-      - name: Deploy (SSH) and Restart App
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_PRIVATE_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
-          script: |
-            cd /var/www/sanatan-website-v2
-            rm -rf node_modules
-            npx prisma migrate deploy
-            npx prisma generate
-            pm2 restart sanatan-website
-      - name: Verify Deployment (optional)
+      - name: Setup SSH
         run: |
-          curl -f https://sanatanmahaparishad.org/api/health || echo "Health check failed (non-blocking)"
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H 147.93.106.12 >> ~/.ssh/known_hosts
 
+      - name: Deploy via SSH
+        run: |
+          ssh root@<YOUR_VPS_IP> << 'EOF'
+            cd /root/sanatan-website
+            git pull origin main
+            npm install
+            npm run build
+            pm2 restart sanatan-website
+          EOF
