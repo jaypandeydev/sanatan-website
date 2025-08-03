@@ -26,6 +26,7 @@ jobs:
             cd /root/sanatan-website
             git pull origin main
             npm install
+            rm -rf .next             
             npm run build
             pm2 restart sanatan-website
           EOF
