@@ -20,28 +20,30 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H 147.93.106.12 >> ~/.ssh/known_hosts
 
-      - name: Deploy on VPS
+      - name: Build project
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy to VPS
         run: |
           ssh jay@147.93.106.12 << 'EOF'
-            set -e
-
             APP_DIR=/var/www/sanatan
-
             mkdir -p $APP_DIR
-            cd $APP_DIR
+          EOF
 
-            # Use SSH URL (important)
-            if [ ! -d ".git" ]; then
-              git clone git@github.com:jaypandeydev/sanatan-website.git .
-            else
-              git pull origin main
-            fi
+          rsync -avz --delete \
+            --exclude ".git" \
+            --exclude "node_modules" \
+            --exclude ".github" \
+            .next package.json package-lock.json public \
+            jay@147.93.106.12:/var/www/sanatan/
 
-            npm install
-            rm -rf .next
-            npm run build
-
+          ssh jay@147.93.106.12 << 'EOF'
+            cd /var/www/sanatan
+            npm install --production
             pm2 restart sanatan || pm2 start npm --name "sanatan" -- start
             pm2 save
           EOF
+
 
