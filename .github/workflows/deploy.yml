@@ -27,26 +27,21 @@ jobs:
 
             APP_DIR=/var/www/sanatan
 
-            # Create app folder if first deploy
-            sudo mkdir -p $APP_DIR
-            sudo chown -R jay:jay $APP_DIR
-
+            mkdir -p $APP_DIR
             cd $APP_DIR
 
-            # Clone repo if not exists
+            # Use SSH URL (important)
             if [ ! -d ".git" ]; then
-              git clone https://github.com/jaypandeydev/sanatan-website.git .
+              git clone git@github.com:jaypandeydev/sanatan-website.git .
             else
               git pull origin main
             fi
 
-            # Install & build
             npm install
             rm -rf .next
             npm run build
 
-            # Start or restart app with PM2
             pm2 restart sanatan || pm2 start npm --name "sanatan" -- start
-
             pm2 save
           EOF
+
