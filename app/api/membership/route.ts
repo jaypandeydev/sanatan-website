@@ -5,22 +5,16 @@ import nodemailer from "nodemailer";
 import { getEmailContent } from "@/lib/emailTemplate";
 import { getLocalizedErrors } from "@/lib/localizeErrors";
 
-// 🔐 Ensure critical .env variables exist
-if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
-  throw new Error("❌ Missing SMTP credentials in environment variables.");
-}
-
 // ✅ Zod schema
 const formSchema = z.object({
   membershipType: z.enum(["lifetime", "ordinary"]),
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
-  // These are REQUIRED in your Prisma model, so make them required here:
   dateOfBirth: z.string().min(1, { message: "Date of birth is required" }),
   sonDaughterOf: z.string().min(1, { message: "This field is required" }),
 
   profession: z.string().optional().nullable(),
   designation: z.string().optional().nullable(),
-  employeeNumber: z.string().optional().nullable(), // incoming field name from UI
+  employeeNumber: z.string().optional().nullable(),
 
   residentialAddress: z.string().min(5, { message: "Address must be at least 5 characters" }),
   contactPhone: z.string().optional().nullable(),
@@ -34,35 +28,40 @@ const formSchema = z.object({
   introducedBy: z.string().optional().nullable(),
   introducer: z.string().optional().nullable(),
   language: z.enum(["en", "hi"]).optional(),
-}).strict(); // 🚫 drop any unknown keys
+}).strict();
 
-// ✅ Email transporter
-const transporter = nodemailer.createTransport({
-  host: "smtp.hostinger.com",
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD,
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
-
-// ✅ POST handler
 export async function POST(req: NextRequest) {
-  let body: any;
   try {
-    body = await req.json(); // ✅ Read only once and store 
+    const body = await req.json();
     const validatedData = formSchema.parse(body);
 
-    const dateOfBirth = validatedData.dateOfBirth ? new Date(validatedData.dateOfBirth) : null;
+    // 🔐 SMTP check MUST be runtime only
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+      console.error("SMTP not configured");
+      return NextResponse.json(
+        { success: false, error: "Email service not configured." },
+        { status: 500 }
+      );
+    }
+
+    // ✅ Create transporter at runtime
+    const transporter = nodemailer.createTransport({
+      host: "smtp.hostinger.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+      tls: { rejectUnauthorized: false },
+    });
+
+    const dateOfBirth = new Date(validatedData.dateOfBirth);
     const dateOfApplication = validatedData.dateOfApplication
       ? new Date(validatedData.dateOfApplication)
       : new Date();
 
-    // 🔍 Check if email already registered
+    // 🔍 Check duplicate email
     const existingUser = await prisma.members.findUnique({
       where: { email: validatedData.email },
     });
@@ -74,37 +73,30 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // ✅ Save to DB
+    // 💾 Save to DB
     const newUser = await prisma.members.create({
-  data: {
-    membershipType: validatedData.membershipType,
-    fullName: validatedData.name.trim(),
-    dateOfBirth: new Date(validatedData.dateOfBirth),       // required
-    sonDaughterOf: validatedData.sonDaughterOf!.trim(),     // required
-    profession: validatedData.profession || null,
-    designation: validatedData.designation || null,
+      data: {
+        membershipType: validatedData.membershipType,
+        fullName: validatedData.name.trim(),
+        dateOfBirth,
+        sonDaughterOf: validatedData.sonDaughterOf.trim(),
+        profession: validatedData.profession || null,
+        designation: validatedData.designation || null,
+        identityCardNumber: validatedData.employeeNumber || null,
+        residentialAddress: validatedData.residentialAddress.trim(),
+        contactPhone: validatedData.contactPhone || null,
+        mobileNumber: validatedData.mobileNumber.trim(),
+        email: validatedData.email.toLowerCase().trim(),
+        otherDetails: validatedData.otherDetails || null,
+        membershipNumber: validatedData.membershipNumber?.trim() || null,
+        dateOfApplication,
+        introducedBy: validatedData.introducedBy || null,
+        introducer: validatedData.introducer || null,
+        membershipStatus: null,
+      },
+    });
 
-    // 🔁 The important fix:
-    identityCardNumber: validatedData.employeeNumber || null,
-
-    residentialAddress: validatedData.residentialAddress.trim(),
-    contactPhone: validatedData.contactPhone || null,
-    mobileNumber: validatedData.mobileNumber.trim(),
-    email: validatedData.email.toLowerCase().trim(),
-    otherDetails: validatedData.otherDetails || null,
-    membershipNumber: (validatedData.membershipNumber?.trim() || null),
-    dateOfApplication,
-    introducedBy: validatedData.introducedBy || null,
-    introducer: validatedData.introducer || null,
-
-    // ❌ remove createdAt (let DB handle it if you add a default) 
-    // createdAt: new Date(),
-
-    membershipStatus: null,
-  },
-});
-
-    // ✅ Send Email
+    // 📧 Send email
     const info = await transporter.sendMail({
       from: `"Sanatan Mahaparishad Bharat" <${process.env.SMTP_USER}>`,
       to: validatedData.email,
@@ -115,22 +107,26 @@ export async function POST(req: NextRequest) {
       html: getEmailContent(validatedData.language ?? "hi", validatedData.name),
     });
 
-    console.log(`✅ Email sent to ${validatedData.email} with ID: ${info.messageId}`);
-
-    if (!info.messageId) {
-      console.warn("⚠️ Email may not have been delivered");
-    }
+    console.log(`✅ Email sent: ${info.messageId}`);
 
     return NextResponse.json({
       success: true,
       message: "Registration successful. Welcome email sent.",
       data: newUser,
     });
+
   } catch (error: any) {
-    console.error("❌ Error in membership registration:", error);
-    return NextResponse.json({
-      success: false,
-      error: error.message || "An error occurred during registration.",
-    }, { status: 500 });
+    console.error("❌ Membership registration error:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error:
+          error?.issues
+            ? getLocalizedErrors(error.issues)
+            : error.message || "Something went wrong",
+      },
+      { status: 500 }
+    );
   }
 }
