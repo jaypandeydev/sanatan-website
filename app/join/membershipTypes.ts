@@ -23,6 +23,6 @@ export const baseSchema = z.object({
   introducedBy: z.string().optional().nullable(),
   introducer: z.string().optional().nullable(),
   language: z.enum(["en", "hi"]).optional(),
-});
+}).strict();
 
 export type FormData = z.infer<typeof baseSchema>;

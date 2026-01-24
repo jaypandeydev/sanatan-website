@@ -14,16 +14,19 @@ if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
 const formSchema = z.object({
   membershipType: z.enum(["lifetime", "ordinary"]),
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
-  dateOfBirth: z.string().optional().nullable(),
-  sonDaughterOf: z.string().optional().nullable(),
+  // These are REQUIRED in your Prisma model, so make them required here:
+  dateOfBirth: z.string().min(1, { message: "Date of birth is required" }),
+  sonDaughterOf: z.string().min(1, { message: "This field is required" }),
+
   profession: z.string().optional().nullable(),
   designation: z.string().optional().nullable(),
-  employeeNumber: z.string().optional().nullable(),
+  employeeNumber: z.string().optional().nullable(), // incoming field name from UI
+
   residentialAddress: z.string().min(5, { message: "Address must be at least 5 characters" }),
   contactPhone: z.string().optional().nullable(),
   mobileNumber: z.string()
-  .min(10, { message: "Mobile number must be at least 10 digits" })
-  .regex(/^[0-9+\s-]+$/, { message: "Invalid mobile number format" }),
+    .min(10, { message: "Mobile number must be at least 10 digits" })
+    .regex(/^[0-9+\s-]+$/, { message: "Invalid mobile number format" }),
   email: z.string().email({ message: "Invalid email address" }),
   otherDetails: z.string().optional().nullable(),
   membershipNumber: z.string().optional().nullable(),
@@ -31,7 +34,7 @@ const formSchema = z.object({
   introducedBy: z.string().optional().nullable(),
   introducer: z.string().optional().nullable(),
   language: z.enum(["en", "hi"]).optional(),
-});
+}).strict(); // 🚫 drop any unknown keys
 
 // ✅ Email transporter
 const transporter = nodemailer.createTransport({
@@ -73,27 +76,33 @@ export async function POST(req: NextRequest) {
 
     // ✅ Save to DB
     const newUser = await prisma.members.create({
-      data: {
-        membershipType: validatedData.membershipType,
-        fullName: validatedData.name,
-        dateOfBirth,
-        sonDaughterOf: validatedData.sonDaughterOf,
-        profession: validatedData.profession,
-        designation: validatedData.designation,
-        employeeNumber: validatedData.employeeNumber,
-        residentialAddress: validatedData.residentialAddress,
-        contactPhone: validatedData.contactPhone,
-        mobileNumber: validatedData.mobileNumber,
-        email: validatedData.email,
-        otherDetails: validatedData.otherDetails,
-        membershipNumber: validatedData.membershipNumber,
-        dateOfApplication,
-        introducedBy: validatedData.introducedBy,
-        introducer: validatedData.introducer,
-        createdAt: new Date(),
-        membershipStatus: null,
-      },
-    });
+  data: {
+    membershipType: validatedData.membershipType,
+    fullName: validatedData.name.trim(),
+    dateOfBirth: new Date(validatedData.dateOfBirth),       // required
+    sonDaughterOf: validatedData.sonDaughterOf!.trim(),     // required
+    profession: validatedData.profession || null,
+    designation: validatedData.designation || null,
+
+    // 🔁 The important fix:
+    identityCardNumber: validatedData.employeeNumber || null,
+
+    residentialAddress: validatedData.residentialAddress.trim(),
+    contactPhone: validatedData.contactPhone || null,
+    mobileNumber: validatedData.mobileNumber.trim(),
+    email: validatedData.email.toLowerCase().trim(),
+    otherDetails: validatedData.otherDetails || null,
+    membershipNumber: (validatedData.membershipNumber?.trim() || null),
+    dateOfApplication,
+    introducedBy: validatedData.introducedBy || null,
+    introducer: validatedData.introducer || null,
+
+    // ❌ remove createdAt (let DB handle it if you add a default) 
+    // createdAt: new Date(),
+
+    membershipStatus: null,
+  },
+});
 
     // ✅ Send Email
     const info = await transporter.sendMail({

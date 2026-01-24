@@ -60,6 +60,6 @@ model Members {
   dateOfApplication  DateTime?
   introducedBy       String?
   introducer         String?
-  createdAt          DateTime?
+  createdAt          DateTime @default(now())
   membershipStatus   String?
 } 
