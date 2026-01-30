@@ -13,6 +13,17 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 🔨 Build on GitHub
+      - name: Install dependencies & build
+        run: |
+          npm install
+          npm run build
+
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -20,18 +31,13 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H 147.93.106.12 >> ~/.ssh/known_hosts
 
-      - name: Build project
+      - name: Ensure app directory exists
         run: |
-          npm install
-          npm run build
+          ssh jay@147.93.106.12 "mkdir -p /var/www/sanatan"
 
+      # 🚀 Deploy built app INCLUDING .next
       - name: Deploy files to VPS
         run: |
-          ssh jay@147.93.106.12 << 'EOF'
-            APP_DIR=/var/www/sanatan
-            mkdir -p $APP_DIR
-          EOF
-
           rsync -avz --delete \
             --exclude ".git" \
             --exclude "node_modules" \
@@ -40,28 +46,27 @@ jobs:
             . \
             jay@147.93.106.12:/var/www/sanatan/
 
-      # 🔥 CREATE .env AFTER FILES ARE DEPLOYED
+      # 🔐 Create clean .env (NO SPACES, NO EOL/EOF WRITTEN)
       - name: Create production .env file on VPS
         run: |
-          ssh jay@147.93.106.12 << 'EOF'
-            cat > /var/www/sanatan/.env << EOL
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
-            SMTP_HOST=${{ secrets.SMTP_HOST }}
-            SMTP_PORT=${{ secrets.SMTP_PORT }}
-            SMTP_SECURE=${{ secrets.SMTP_SECURE }}
-            SMTP_USER=${{ secrets.SMTP_USER }}
-            SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
-            EOL
-                      EOF
+          ssh jay@147.93.106.12 "cat > /var/www/sanatan/.env << 'ENVEOF'
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          SMTP_HOST=${{ secrets.SMTP_HOST }}
+          SMTP_PORT=${{ secrets.SMTP_PORT }}
+          SMTP_SECURE=${{ secrets.SMTP_SECURE }}
+          SMTP_USER=${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+          ENVEOF"
 
-      - name: Install deps, build & restart app
+      # 🗄 Install deps, run Prisma, restart
+      - name: Install deps & restart app
         run: |
           ssh jay@147.93.106.12 << 'EOF'
             cd /var/www/sanatan
-            npm install --production
+
+            npm install
             npx prisma generate
             npx prisma migrate deploy
-            npm run build
 
             pm2 start ecosystem.config.js --update-env || pm2 restart sanatan --update-env
             pm2 save
