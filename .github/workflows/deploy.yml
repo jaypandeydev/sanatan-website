@@ -36,13 +36,17 @@ jobs:
             --exclude ".git" \
             --exclude "node_modules" \
             --exclude ".github" \
-            .next package.json package-lock.json public \
+            --exclude ".next" \
+            . \
             jay@147.93.106.12:/var/www/sanatan/
+
 
           ssh jay@147.93.106.12 << 'EOF'
             cd /var/www/sanatan
-            npm install --production
-            pm2 restart sanatan || pm2 start npm --name "sanatan" -- start
+            npm install
+            npm run build
+
+            pm2 start ecosystem.config.js --update-env || pm2 restart sanatan --update-env
             pm2 save
           EOF
 
