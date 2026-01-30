@@ -80,9 +80,9 @@ export default function Footer() {
           <div className="flex flex-col items-center md:items-start">
             <h4 className="font-semibold text-lg mb-3">{t.contact}</h4>
             <address className="not-italic text-center md:text-left">
-              <p>{t.office}: ज्ञान सरोवर विद्यालय,</p>
-              <p>निकट गाँधी पार्क, वृंदावन योजना,</p>
-              <p>लखनऊ-226029</p>
+              <p>{t.office}: फ्लैट नंबर 503, टावर नंबर 16, ओमेक्स आर2</p>
+              <p>गोमती नगर एक्सटेंशन, पुलिस मुख्यालय के पास</p>
+              <p>लखनऊ-226002</p>
               <p className="mt-2">{t.email}: info@sanatanmahaparishad.org</p>
             </address>
           </div>

@@ -21,7 +21,7 @@ export default function ContactPage() {
         address: {
           title: "पता",
           content:
-            "कार्यालय: ज्ञान सरोवर विद्यालय, निकट गांधी पार्क, मुखावत योजना, लखनऊओ-226029",
+            "कार्यालय: फ्लैट नंबर 503, टावर नंबर 16, ओमेक्स आर2, गोमती नगर एक्सटेंशन, पुलिस मुख्यालय के पास, लखनऊ, उत्तर प्रदेश, भारत 226002",
         },
         phone: {
           title: "फोन",
@@ -56,7 +56,7 @@ export default function ContactPage() {
         address: {
           title: "Address",
           content:
-            "Office: Gyan Sarovar Vidyalaya, Near Gandhi Park, Mukhavat Yojana, Lucknow-226029",
+            "Office: Flat No 503,Tower No 16,Omeax R2 Gomti Nagar Extension, Near Police Headquarter Lucknow, Uttar Pradesh India 226002",
         },
         phone: {
           title: "Phone",
