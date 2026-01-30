@@ -25,7 +25,7 @@ jobs:
           npm install
           npm run build
 
-      - name: Deploy to VPS
+      - name: Deploy files to VPS
         run: |
           ssh jay@147.93.106.12 << 'EOF'
             APP_DIR=/var/www/sanatan
@@ -36,18 +36,33 @@ jobs:
             --exclude ".git" \
             --exclude "node_modules" \
             --exclude ".github" \
-            --exclude ".next" \
+            --exclude ".env" \
             . \
             jay@147.93.106.12:/var/www/sanatan/
 
+      # 🔥 CREATE .env AFTER FILES ARE DEPLOYED
+      - name: Create production .env file on VPS
+        run: |
+          ssh jay@147.93.106.12 << 'EOF'
+            cat > /var/www/sanatan/.env << EOL
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            SMTP_HOST=${{ secrets.SMTP_HOST }}
+            SMTP_PORT=${{ secrets.SMTP_PORT }}
+            SMTP_SECURE=${{ secrets.SMTP_SECURE }}
+            SMTP_USER=${{ secrets.SMTP_USER }}
+            SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+            EOL
+                      EOF
 
+      - name: Install deps, build & restart app
+        run: |
           ssh jay@147.93.106.12 << 'EOF'
             cd /var/www/sanatan
-            npm install
+            npm install --production
+            npx prisma generate
+            npx prisma migrate deploy
             npm run build
 
             pm2 start ecosystem.config.js --update-env || pm2 restart sanatan --update-env
             pm2 save
           EOF
-
-
