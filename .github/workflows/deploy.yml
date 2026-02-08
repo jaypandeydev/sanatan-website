@@ -15,14 +15,19 @@ jobs:
 
       - name: Setup SSH
         run: |
+          set -e
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 700 ~/.ssh
+
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
+
           ssh-keyscan -H 147.93.106.12 >> ~/.ssh/known_hosts
 
       - name: Sync source code (no build artifacts)
         run: |
           rsync -avz --delete \
+            -e "ssh -o ServerAliveInterval=30 -o ServerAliveCountMax=5" \
             --exclude ".git" \
             --exclude ".github" \
             --exclude "node_modules" \
