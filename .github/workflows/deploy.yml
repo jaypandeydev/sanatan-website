@@ -20,7 +20,7 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H 147.93.106.12 >> ~/.ssh/known_hosts
 
-      - name: Sync source code ONLY (no .next, no node_modules)
+      - name: Sync source code (no build artifacts)
         run: |
           rsync -avz --delete \
             --exclude ".git" \
@@ -31,28 +31,36 @@ jobs:
             . \
             jay@147.93.106.12:/var/www/sanatan/
 
-      - name: Create production .env on VPS
+      - name: Create production .env
         run: |
-          ssh jay@147.93.106.12 "cat > /var/www/sanatan/.env << 'EOF'
+          ssh jay@147.93.106.12 << 'EOF'
+          cat > /var/www/sanatan/.env << 'ENVEOF'
           DATABASE_URL=${{ secrets.DATABASE_URL }}
           SMTP_HOST=${{ secrets.SMTP_HOST }}
           SMTP_PORT=${{ secrets.SMTP_PORT }}
           SMTP_SECURE=${{ secrets.SMTP_SECURE }}
           SMTP_USER=${{ secrets.SMTP_USER }}
           SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
-          EOF"
+          ENVEOF
+          EOF
 
-      - name: Install, build, migrate, start (SAFE ORDER)
+      - name: Install & build (no PM2 yet)
         run: |
           ssh jay@147.93.106.12 << 'EOF'
-            set -e
-            cd /var/www/sanatan
+          set -e
+          cd /var/www/sanatan
 
-            npm install --ignore-scripts
-            npx prisma generate
-            npm run build
+          npm install --ignore-scripts
+          npx prisma generate
+          npm run build
+          EOF
 
-            pm2 delete sanatan || true
-            pm2 start npm --name sanatan -- start
-            pm2 save
+      - name: Start app with PM2 (safe)
+        run: |
+          ssh jay@147.93.106.12 << 'EOF'
+          cd /var/www/sanatan
+
+          pm2 delete sanatan || true
+          pm2 start ecosystem.config.js
+          pm2 save
           EOF
