@@ -13,17 +13,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      # 🔨 Build on GitHub
-      - name: Install dependencies & build
-        run: |
-          npm install
-          npm run build
-
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -31,43 +20,39 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H 147.93.106.12 >> ~/.ssh/known_hosts
 
-      - name: Ensure app directory exists
-        run: |
-          ssh jay@147.93.106.12 "mkdir -p /var/www/sanatan"
-
-      # 🚀 Deploy built app INCLUDING .next
-      - name: Deploy files to VPS
+      - name: Sync source code ONLY (no .next, no node_modules)
         run: |
           rsync -avz --delete \
             --exclude ".git" \
-            --exclude "node_modules" \
             --exclude ".github" \
+            --exclude "node_modules" \
+            --exclude ".next" \
             --exclude ".env" \
             . \
             jay@147.93.106.12:/var/www/sanatan/
 
-      # 🔐 Create clean .env (NO SPACES, NO EOL/EOF WRITTEN)
-      - name: Create production .env file on VPS
+      - name: Create production .env on VPS
         run: |
-          ssh jay@147.93.106.12 "cat > /var/www/sanatan/.env << 'ENVEOF'
+          ssh jay@147.93.106.12 "cat > /var/www/sanatan/.env << 'EOF'
           DATABASE_URL=${{ secrets.DATABASE_URL }}
           SMTP_HOST=${{ secrets.SMTP_HOST }}
           SMTP_PORT=${{ secrets.SMTP_PORT }}
           SMTP_SECURE=${{ secrets.SMTP_SECURE }}
           SMTP_USER=${{ secrets.SMTP_USER }}
           SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
-          ENVEOF"
+          EOF"
 
-      # 🗄 Install deps, run Prisma, restart
-      - name: Install deps & restart app
+      - name: Install, build, migrate, start (SAFE ORDER)
         run: |
           ssh jay@147.93.106.12 << 'EOF'
+            set -e
             cd /var/www/sanatan
 
-            npm install
+            npm install --ignore-scripts
             npx prisma generate
-            npx prisma migrate deploy
+            npm run build
 
-            pm2 start ecosystem.config.js --update-env || pm2 restart sanatan --update-env
+            pm2 delete sanatan || true
+            pm2 start npm --name sanatan -- start
             pm2 save
           EOF
