@@ -10,11 +10,17 @@ RUN npm ci --ignore-scripts
 
 # ---- Builder ----
 FROM base AS builder
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+WORKDIR /app
 
-# ✅ Prisma client must be generated BEFORE build
+# Dependencies
+COPY --from=deps /app/node_modules ./node_modules
+
+# Prisma schema first (cache-friendly + safe)
+COPY prisma ./prisma
 RUN npx prisma generate
+
+# Application source
+COPY . .
 
 # Build Next.js
 RUN npm run build
@@ -23,13 +29,13 @@ RUN npm run build
 FROM node:22-alpine AS runner
 WORKDIR /app
 
-# Create non-root user
+# Non-root runtime user
 RUN addgroup -S app && adduser -S app -G app
 
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Copy only what runtime needs
+# Runtime-only artifacts
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
