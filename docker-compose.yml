@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  sanatan:
+    container_name: sanatan_app
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
