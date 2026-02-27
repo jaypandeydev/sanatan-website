@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Shield, BookOpen, Landmark } from "lucide-react"
+import { Shield, BookOpen, Landmark, AlertTriangle } from "lucide-react"
 import { useLanguage } from "@/contexts/LanguageContext"
 import Link from "next/link"
 import { useState } from "react"
@@ -21,6 +21,14 @@ export default function Home() {
         subtitle: "भारतीय संस्कृति और सनातन धर्म की रक्षा के लिए समर्पित संस्था",
         cta1: "हमसे जुड़ें",
         cta2: "और जानें",
+      },
+      notice: {
+        title: "महत्वपूर्ण सूचना",
+        paragraphs: [
+          "सनातन महापरिषद किसी भी प्रकार की सदस्यता या सेवाओं के लिए कोई शुल्क नहीं लेती है।",
+          "यदि कोई व्यक्ति या संस्था सनातन महापरिषद के नाम पर धन की मांग करता है, तो कृपया ध्यान दें कि यह पूर्णतः गलत और अनधिकृत है। हम सभी से सतर्क रहने और ऐसी किसी भी घटना की सूचना देने का अनुरोध करते हैं।",
+          "सनातन महापरिषद निःस्वार्थ भाव से समाज सेवा के लिए प्रतिबद्ध है।"
+        ]
       },
       objectives: {
         title: "हमारे मुख्य उद्देश्य",
@@ -94,6 +102,14 @@ export default function Home() {
         subtitle: "An organization dedicated to the protection of Indian culture and Sanatan Dharma",
         cta1: "Join Us",
         cta2: "Learn More",
+      },
+      notice: {
+        title: "Important Notice",
+        paragraphs: [
+          "Sanatan Mahaparishad does not charge any money from anyone for membership or for any of its services.",
+          "If any person or organization claims to collect money on behalf of Sanatan Mahaparishad, please note that such claims are false and unauthorized. We request everyone to remain alert and report such incidents.",
+          "Sanatan Mahaparishad is committed to serving society selflessly."
+        ]
       },
       objectives: {
         title: "Our Main Objectives",
@@ -203,6 +219,27 @@ export default function Home() {
               {t.hero.cta2}
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* Notice Section */}
+      <section className="w-full py-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <Card className="border-red-300/60 shadow-md bg-red-50/40 backdrop-blur-sm">
+            <CardHeader className="flex flex-row items-center gap-3 pb-3 border-b border-red-200/80">
+              <AlertTriangle className="h-6 w-6 text-red-700 shrink-0" />
+              <CardTitle className="text-xl md:text-2xl font-bold text-red-800 m-0">
+                {t.notice.title}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-5 space-y-3">
+              {t.notice.paragraphs.map((para, idx) => (
+                <p key={idx} className="text-gray-800 text-sm md:text-base leading-relaxed md:text-left">
+                  {para}
+                </p>
+              ))}
+            </CardContent>
+          </Card>
         </div>
       </section>
 

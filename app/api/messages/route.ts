@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import nodemailer from 'nodemailer';
+import { verifyAdminToken, unauthorizedResponse } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,7 +34,10 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const token = verifyAdminToken(req);
+  if (!token) return unauthorizedResponse();
+
   try {
     const messages = await prisma.message.findMany({ orderBy: { createdAt: 'desc' } });
     return NextResponse.json({ messages });

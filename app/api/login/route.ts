@@ -3,9 +3,13 @@ import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = 'supersecretkey'; // In production, use process.env.JWT_SECRET
-
 export async function POST(req: NextRequest) {
+  const JWT_SECRET = process.env.JWT_SECRET;
+  if (!JWT_SECRET) {
+    console.error('JWT_SECRET is not configured in the environment variables.');
+    return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
+  }
+
   const { email, password } = await req.json();
   if (!email || !password) {
     return NextResponse.json({ error: 'Email and password are required.' }, { status: 400 });

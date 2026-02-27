@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -33,6 +34,7 @@ interface Member {
 
 export default function MembersPage() {
   const { language } = useLanguage();
+  const router = useRouter();
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -40,13 +42,36 @@ export default function MembersPage() {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
 
   useEffect(() => {
-    fetch("/api/membership/all")
-      .then((res) => res.json())
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
+    fetch("/api/membership/all", {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then((res) => {
+        if (!res.ok) {
+          if (res.status === 401) {
+            localStorage.removeItem('token');
+            router.push('/login');
+          }
+          throw new Error('Failed to fetch');
+        }
+        return res.json();
+      })
       .then((data) => {
         setMembers(data.members || []);
         setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
       });
-  }, []);
+  }, [router]);
 
   const content = {
     hi: {

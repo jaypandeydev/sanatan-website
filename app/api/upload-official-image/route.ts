@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { promises as fs } from 'fs'
 import path from 'path'
 import { randomUUID } from 'crypto'
+import { verifyAdminToken, unauthorizedResponse } from '@/lib/auth'
 
 export const maxSize = 1024 * 1024 // 1MB
 
 export async function POST(req: NextRequest) {
+  const token = verifyAdminToken(req);
+  if (!token) return unauthorizedResponse();
+
   try {
     const formData = await req.formData()
     const file = formData.get('file') as File
