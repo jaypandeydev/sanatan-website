@@ -1,10 +1,32 @@
-version: "3.9"
-
 services:
+  db:
+    image: postgres:16-alpine
+    container_name: sanatan_db
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+    networks:
+      - sanatan_net
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   sanatan:
     image: sanatan:secure
     container_name: sanatan_app
     restart: unless-stopped
+
+    depends_on:
+      db:
+        condition: service_healthy
 
     ports:
       - "3000:3000"
@@ -15,13 +37,25 @@ services:
     read_only: true
     security_opt:
       - no-new-privileges:true
+    cap_drop:
+      - ALL
 
     tmpfs:
       - /tmp
       - /run
+
+    networks:
+      - sanatan_net
 
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
       interval: 30s
       timeout: 5s
       retries: 3
+
+volumes:
+  pgdata:
+
+networks:
+  sanatan_net:
+    driver: bridge
