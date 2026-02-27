@@ -23,13 +23,12 @@ services:
     image: sanatan:secure
     container_name: sanatan_app
     restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
 
     depends_on:
       db:
         condition: service_healthy
-
-    expose:
-      - "3000"
 
     env_file:
       - .env
