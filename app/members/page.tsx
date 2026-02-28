@@ -42,7 +42,7 @@ export default function MembersPage() {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('jwt');
     if (!token) {
       router.push('/login');
       return;
@@ -56,7 +56,7 @@ export default function MembersPage() {
       .then((res) => {
         if (!res.ok) {
           if (res.status === 401) {
-            localStorage.removeItem('token');
+            localStorage.removeItem('jwt');
             router.push('/login');
           }
           throw new Error('Failed to fetch');

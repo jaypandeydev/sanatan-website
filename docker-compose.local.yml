@@ -3,12 +3,16 @@ services:
     image: postgres:16-alpine
     container_name: sanatan_db
     restart: unless-stopped
+
     env_file:
       - .env
+
     volumes:
       - pgdata:/var/lib/postgresql/data
+
     networks:
       - sanatan_net
+
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
       interval: 10s
@@ -16,26 +20,34 @@ services:
       retries: 5
 
   sanatan:
-    image: ghcr.io/jaypandeydev/sanatan:latest # ✅ PULL FROM GHCR
+    image: sanatan:secure
+    build: .
     container_name: sanatan_app
     restart: unless-stopped
+
     ports:
       - "127.0.0.1:3000:3000"
+
     depends_on:
       db:
         condition: service_healthy
+
     env_file:
       - .env
+
     read_only: true
     security_opt:
       - no-new-privileges:true
     cap_drop:
       - ALL
+
     tmpfs:
       - /tmp
       - /run
+
     networks:
       - sanatan_net
+
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:3000/api/health" ]
       interval: 30s

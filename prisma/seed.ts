@@ -1,5 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import * as dotenv from 'dotenv';
+import path from 'path';
+
+// Load .env explicitly
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 const prisma = new PrismaClient();
 
@@ -20,7 +25,7 @@ async function main() {
 
   // Create admin user if it doesn't exist
   const hashedPassword = await bcrypt.hash(adminPassword, 10);
-  
+
   const newUser = await prisma.user.create({
     data: {
       email: adminEmail,
