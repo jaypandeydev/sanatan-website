@@ -16,6 +16,21 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Validate SSH access to VPS
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=/dev/null \
+              -o BatchMode=yes \
+              -o ConnectTimeout=10 \
+              -i ~/.ssh/id_rsa "$VPS_USER@$VPS_HOST" 'echo SSH connection OK'
+
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
