@@ -62,6 +62,6 @@ jobs:
             docker pull ghcr.io/jaypandeydev/sanatan:latest
             docker compose -f docker-compose.yml up -d db
             sleep 10
-            docker compose -f docker-compose.yml run --rm --no-deps sanatan sh -c "npx prisma migrate deploy && npx prisma generate"
+            docker compose -f docker-compose.yml run --rm --no-deps sanatan sh -c "npx prisma migrate deploy"
             docker compose -f docker-compose.yml up -d
             docker image prune -f
