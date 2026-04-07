@@ -41,5 +41,8 @@ jobs:
             export GODEBUG=netdns=go
             cd /opt/sanatan
             docker pull ghcr.io/jaypandeydev/sanatan:latest
+            docker compose up -d db
+            sleep 10
+            docker run --rm --env-file .env ghcr.io/jaypandeydev/sanatan:latest sh -c "npx prisma migrate deploy && npx prisma generate"
             docker compose up -d
             docker image prune -f
