@@ -37,12 +37,16 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            set -e 
+            set -e
             export GODEBUG=netdns=go
             cd /opt/sanatan
+            if [ -d .git ]; then
+              git fetch origin main
+              git reset --hard origin/main
+            fi
             docker pull ghcr.io/jaypandeydev/sanatan:latest
-            docker compose up -d db
+            docker compose -f docker-compose.yml up -d
             sleep 10
             docker run --rm --env-file .env ghcr.io/jaypandeydev/sanatan:latest sh -c "npx prisma migrate deploy && npx prisma generate"
-            docker compose up -d
+            docker compose -f docker-compose.yml up -d
             docker image prune -f
