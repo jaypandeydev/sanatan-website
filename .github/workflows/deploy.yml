@@ -60,8 +60,8 @@ jobs:
               git reset --hard origin/main
             fi
             docker pull ghcr.io/jaypandeydev/sanatan:latest
-            docker compose -f docker-compose.yml up -d
+            docker compose -f docker-compose.yml up -d db
             sleep 10
-            docker run --rm --env-file .env ghcr.io/jaypandeydev/sanatan:latest sh -c "npx prisma migrate deploy && npx prisma generate"
+            docker compose -f docker-compose.yml run --rm --no-deps sanatan sh -c "npx prisma migrate deploy && npx prisma generate"
             docker compose -f docker-compose.yml up -d
             docker image prune -f
