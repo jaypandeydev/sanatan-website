@@ -73,6 +73,11 @@ export default function Home() {
         title: "हाल के कार्यक्रम",
         items: [
           {
+            title: "राष्ट्रीय कार्यकारिणी बैठक एवं सम्मान समारोह",
+            description: "लखनऊ में आयोजित बैठक में \"गीता संदेश साइकिल अभियान\" की रूपरेखा तय की गई एवं पदाधिकारियों का सम्मान किया गया।",
+            image: "/images/event-felicitation.jpeg",
+          },
+          {
             title: "वार्षिक सम्मेलन 2023",
             description: "सनातन महापरिषद भारत का वार्षिक सम्मेलन लखनऊ में आयोजित किया गया।",
             image: "/images/annual-conference.jpeg",
@@ -154,6 +159,11 @@ export default function Home() {
         title: "Recent Events",
         items: [
           {
+            title: "National Executive Meeting & Felicitation",
+            description: "Leadership convened in Lucknow to outline the \"Gita Message Cycle Campaign\" and honoured key office-bearers.",
+            image: "/images/event-felicitation.jpeg",
+          },
+          {
             title: "Annual Conference 2023",
             description: "Sanatan Mahaparishad Bharat's annual conference was held in Lucknow.",
             image: "/images/annual-conference.jpeg",
@@ -207,127 +217,149 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center">
       {/* Hero Section */}
-      <section className="w-full bg-transparent py-16 px-4">
-        <div className="container mx-auto text-center">
-          <h1 className="text-3xl md:text-5xl font-bold text-red-800 mb-6">{t.hero.title}</h1>
-          <p className="text-lg md:text-xl text-red-700 mb-8 max-w-3xl mx-auto">{t.hero.subtitle}</p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/join">
-              <Button className="bg-red-700 hover:bg-red-800 text-white px-8 py-2 rounded">{t.hero.cta1}</Button>
-            </Link>
-            <Button variant="outline" className="border-red-700 text-red-700 hover:bg-red-50 px-8 py-2 rounded">
-              {t.hero.cta2}
-            </Button>
+      <section className="w-full py-8 md:py-12 px-4">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+            <div className="text-center md:text-left order-2 md:order-1">
+              <span className="inline-block text-xs md:text-sm font-semibold tracking-wider uppercase bg-amber-100 text-amber-800 border border-amber-200 rounded-full px-3 py-1 mb-5">
+                {language === "hi" ? "पंजीकरण संख्या 4/134/2021" : "Reg. No. 4/134/2021"}
+              </span>
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-red-800 mb-6 leading-tight">
+                {t.hero.title}
+              </h1>
+              <p className="text-lg md:text-xl text-red-700/90 mb-8 max-w-xl mx-auto md:mx-0 leading-relaxed">
+                {t.hero.subtitle}
+              </p>
+              <div className="flex flex-wrap justify-center md:justify-start gap-4">
+                <Link href="/join">
+                  <Button className="bg-red-700 hover:bg-red-800 text-white px-8 py-3 rounded text-base shadow-sm hover:shadow-md transition-shadow">
+                    {t.hero.cta1}
+                  </Button>
+                </Link>
+                <Link href="/about">
+                  <Button variant="outline" className="border-red-700 text-red-700 hover:bg-red-50 px-8 py-3 rounded text-base">
+                    {t.hero.cta2}
+                  </Button>
+                </Link>
+              </div>
+            </div>
+            <div className="order-1 md:order-2">
+              <div className="relative aspect-[4/5] md:aspect-square w-full max-w-md mx-auto">
+                <div className="absolute -inset-3 bg-gradient-to-br from-amber-200 via-orange-200 to-red-200 rounded-3xl rotate-3" aria-hidden="true" />
+                <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-xl border-4 border-white">
+                  <Image
+                    src="/images/lord-rama-background.png"
+                    alt="Sanatan Dharma"
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Notice Section */}
-      <section className="w-full py-8 px-4">
-        <div className="container mx-auto max-w-4xl">
-          <Card className="border-red-300/60 shadow-md bg-red-50/40 backdrop-blur-sm">
-            <CardHeader className="flex flex-row items-center gap-3 pb-3 border-b border-red-200/80">
-              <AlertTriangle className="h-6 w-6 text-red-700 shrink-0" />
-              <CardTitle className="text-xl md:text-2xl font-bold text-red-800 m-0">
-                {t.notice.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-5 space-y-3">
-              {t.notice.paragraphs.map((para, idx) => (
-                <p key={idx} className="text-gray-800 text-sm md:text-base leading-relaxed md:text-left">
-                  {para}
-                </p>
-              ))}
-            </CardContent>
-          </Card>
+      {/* Notice Strip */}
+      <section className="w-full px-4 py-2">
+        <div className="container mx-auto">
+          <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 md:py-4 flex items-start gap-3">
+            <AlertTriangle className="h-5 w-5 md:h-6 md:w-6 text-red-700 shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <h3 className="font-bold text-red-800 text-sm md:text-base mb-1">{t.notice.title}</h3>
+              <p className="text-gray-700 text-xs md:text-sm leading-relaxed">
+                {t.notice.paragraphs.join(" ")}
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Daily Wisdom Section */}
-      <section className="w-full py-4 px-4">
-        <div className="container mx-auto flex justify-center">
-          <Card className="max-w-2xl w-full bg-yellow-50/80 border-yellow-200 shadow-md">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xl font-bold text-yellow-800 text-center">
-                {language === "hi" ? "दैनिक ज्ञान" : "Daily Wisdom"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-lg text-yellow-900 text-center font-serif mb-2">“{dailyWisdom[language].quote}”</p>
-              <p className="text-right text-yellow-700 italic">— {dailyWisdom[language].source}</p>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Newsletter Signup Section */}
-      <section className="w-full py-4 px-4">
-        <div className="container mx-auto flex justify-center">
-          <Card className="max-w-2xl w-full bg-white/80 border-orange-200 shadow-md">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xl font-bold text-red-800 text-center">
-                {language === "hi" ? "न्यूज़लेटर सदस्यता" : "Newsletter Signup"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {newsletterSuccess ? (
-                <div className="text-green-700 text-center font-medium py-2">
-                  {language === "hi"
-                    ? "सफलतापूर्वक सदस्यता ली गई! धन्यवाद।"
-                    : "Successfully subscribed! Thank you."}
+      {/* Daily Wisdom + Newsletter Section */}
+      <section className="w-full py-6 md:py-8 px-4">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            <div className="bg-amber-50 border border-amber-200 rounded-lg shadow-sm px-5 py-4 flex items-center gap-4">
+              <div className="hidden sm:flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-800 font-bold">
+                ॐ
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-xs font-semibold text-amber-700 uppercase tracking-wider mb-0.5">
+                  {language === "hi" ? "दैनिक ज्ञान" : "Daily Wisdom"}
                 </div>
-              ) : (
-                <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-2 items-center justify-center">
-                  <Input
-                    type="email"
-                    required
-                    placeholder={language === "hi" ? "अपना ईमेल दर्ज करें..." : "Enter your email..."}
-                    value={newsletterEmail}
-                    onChange={(e) => setNewsletterEmail(e.target.value)}
-                    className="max-w-xs"
-                  />
-                  <Button type="submit" className="bg-red-700 hover:bg-red-800 text-white px-6 py-2 rounded">
-                    {language === "hi" ? "सब्सक्राइब करें" : "Subscribe"}
-                  </Button>
-                </form>
-              )}
-            </CardContent>
-          </Card>
+                <p className="text-sm md:text-base text-amber-900 font-serif leading-snug">
+                  “{dailyWisdom[language].quote}” <span className="text-amber-700 font-sans text-xs">— {dailyWisdom[language].source}</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white border border-orange-200 rounded-lg shadow-sm px-5 py-4 flex items-center gap-4">
+              <div className="min-w-0 flex-1">
+                <div className="text-xs font-semibold text-red-700 uppercase tracking-wider mb-1">
+                  {language === "hi" ? "न्यूज़लेटर सदस्यता" : "Newsletter Signup"}
+                </div>
+                {newsletterSuccess ? (
+                  <div className="text-green-700 font-medium text-sm">
+                    {language === "hi"
+                      ? "सफलतापूर्वक सदस्यता ली गई! धन्यवाद।"
+                      : "Successfully subscribed! Thank you."}
+                  </div>
+                ) : (
+                  <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-2">
+                    <Input
+                      type="email"
+                      required
+                      placeholder={language === "hi" ? "अपना ईमेल दर्ज करें..." : "Enter your email..."}
+                      value={newsletterEmail}
+                      onChange={(e) => setNewsletterEmail(e.target.value)}
+                      className="flex-1 h-9"
+                    />
+                    <Button type="submit" className="bg-red-700 hover:bg-red-800 text-white px-5 h-9 rounded text-sm">
+                      {language === "hi" ? "सब्सक्राइब करें" : "Subscribe"}
+                    </Button>
+                  </form>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Objectives Section */}
-      <section className="w-full py-16 px-4">
+      <section className="w-full py-5 md:py-8 px-4">
         <div className="container mx-auto">
-          <h2 className="text-2xl md:text-4xl font-bold text-red-800 text-center mb-12">{t.objectives.title}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <h2 className="text-xl md:text-2xl font-bold text-red-800 text-center mb-4 md:mb-6">{t.objectives.title}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {t.objectives.items.map((item, index) => (
-              <Card
+              <div
                 key={index}
-                className="border border-orange-200 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white/40 backdrop-blur-sm"
+                className="bg-white border border-orange-200 rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-4 px-4 py-3.5"
               >
-                <CardHeader className="flex flex-col items-center pb-2">
-                  {item.icon && <item.icon className="h-12 w-12 text-red-700 mb-2" />}
-                  <CardTitle className="text-xl font-bold text-red-800 text-center">{item.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center">
-                  <p className="text-gray-700">{item.description}</p>
-                </CardContent>
-              </Card>
+                {item.icon && (
+                  <div className="shrink-0 flex h-11 w-11 items-center justify-center rounded-lg bg-red-50 text-red-700">
+                    <item.icon className="h-5 w-5" />
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <h3 className="text-base font-bold text-red-800 leading-tight mb-0.5">{item.title}</h3>
+                  <p className="text-xs md:text-sm text-gray-600 leading-snug">{item.description}</p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Importance Section */}
-      <section className="w-full bg-transparent py-16 px-4">
+      <section className="w-full py-5 md:py-8 px-4">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row gap-12">
             <div className="w-full md:w-1/2">
               <h2 className="text-2xl md:text-4xl font-bold text-red-800 mb-6">{t.importance.title}</h2>
               <div className="prose prose-lg text-gray-700">
                 {t.importance.content.map((paragraph, index) => (
-                  <p key={index} className="mb-4">
+                  <p key={index} className="mb-4 leading-relaxed">
                     {paragraph}
                   </p>
                 ))}
@@ -349,14 +381,14 @@ export default function Home() {
       </section>
 
       {/* Recent Events Section */}
-      <section className="w-full py-16 px-4">
+      <section className="w-full py-5 md:py-8 px-4">
         <div className="container mx-auto">
-          <h2 className="text-2xl md:text-4xl font-bold text-red-800 text-center mb-12">{t.events.title}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <h2 className="text-2xl md:text-4xl font-bold text-red-800 text-center mb-4 md:mb-6">{t.events.title}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {t.events.items.map((event, index) => (
               <Card
                 key={index}
-                className="border border-orange-200 rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden bg-white/40 backdrop-blur-sm"
+                className="bg-white border border-orange-200 rounded-lg shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden"
               >
                 <div className="relative h-48 w-full">
                   <Image src={event.image || "/placeholder.svg"} alt={event.title} fill className="object-cover" />
@@ -377,13 +409,17 @@ export default function Home() {
       </section>
 
       {/* Join Us Section */}
-      <section className="w-full bg-red-700/40 text-white py-16 px-4 backdrop-blur-sm">
-        <div className="container mx-auto text-center">
-          <h2 className="text-2xl md:text-4xl font-bold mb-6">{t.join.title}</h2>
-          <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto">{t.join.description}</p>
-          <Link href="/join">
-            <Button className="bg-white text-red-700 hover:bg-gray-100 px-8 py-2 rounded">{t.join.cta}</Button>
-          </Link>
+      <section className="w-full px-4 py-2">
+        <div className="container mx-auto">
+          <div className="bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-400 text-red-900 rounded-lg border border-amber-400/40 shadow-sm px-5 md:px-8 py-5 md:py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="text-center md:text-left flex-1 min-w-0">
+              <h2 className="text-lg md:text-2xl font-bold mb-1">{t.join.title}</h2>
+              <p className="text-sm md:text-base text-red-800/90 leading-snug">{t.join.description}</p>
+            </div>
+            <Link href="/join" className="shrink-0">
+              <Button className="bg-red-700 text-white hover:bg-red-800 px-6 py-2 rounded font-semibold shadow-sm">{t.join.cta}</Button>
+            </Link>
+          </div>
         </div>
       </section>
     </div>
