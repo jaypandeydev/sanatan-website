@@ -14,12 +14,22 @@ export async function POST(req: NextRequest) {
       data: { name, email, phone, message },
     });
     // Send email
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+      console.error('SMTP not configured');
+      return NextResponse.json(
+        { error: 'Email service not configured.' },
+        { status: 500 }
+      );
+    }
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.hostinger.com',
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        pass: process.env.SMTP_PASSWORD,
       },
+      tls: { rejectUnauthorized: false },
     });
     await transporter.sendMail({
       from: process.env.SMTP_USER,
