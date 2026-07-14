@@ -71,10 +71,10 @@ export default function RootLayout({
           }],
           "address": {
             "@type": "PostalAddress",
-            "streetAddress": "Gyan Sarovar Vidyalaya, Near Gandhi Park, Mukhavat Yojana",
+            "streetAddress": "Flat No 503, Tower No 16, Omeax R2, Gomti Nagar Extension, Near Police Headquarter",
             "addressLocality": "Lucknow",
             "addressRegion": "UP",
-            "postalCode": "226029",
+            "postalCode": "226002",
             "addressCountry": "IN"
           }
         }` }} />

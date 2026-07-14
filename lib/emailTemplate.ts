@@ -16,7 +16,7 @@ export function getEmailContent(language: string, name: string): string {
         <p><strong>Sanatan Mahaparishad Bharat</strong></p>
         <p><strong>Note:</strong> This membership request form is acknowledged. However, your membership with Sanatan Mahaparishad will be permanent only after your payment is completed and you acknowledge us by sending the receipt.</p>
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; font-size: 12px; color: #666;">
-          <p>Office: Gyan Sarovar Vidyalaya, Near Gandhi Park, Mukhavat Yojana, Lucknow-226029</p>
+          <p>Office: Flat No 503, Tower No 16, Omeax R2, Gomti Nagar Extension, Near Police Headquarter, Lucknow, Uttar Pradesh, India 226002</p>
           <p>Email: info@sanatanmahaparishad.org</p>
         </div>
       </div>
