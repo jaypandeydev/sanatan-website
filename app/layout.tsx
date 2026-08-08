@@ -20,11 +20,41 @@ const notoSans = Noto_Sans({
   variable: "--font-noto-sans",
 })
 
+const siteUrl = "https://sanatanmahaparishad.org"
+const siteTitle = "सनातन महापरिषद् भारत | Sanatan Mahaparishad Bharat"
+const siteDescription =
+  "भारतीय संस्कृति और सनातन धर्म की रक्षा के लिए समर्पित संस्था | An organization dedicated to the protection of Indian culture and Sanatan Dharma"
+
 export const metadata: Metadata = {
-  title: "सनातन महापरिषद् भारत | Sanatan Mahaparishad Bharat",
-  description:
-    "भारतीय संस्कृति और सनातन धर्म की रक्षा के लिए समर्पित संस्था | An organization dedicated to the protection of Indian culture and Sanatan Dharma",
-    generator: 'v0.dev'
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: siteTitle,
+    template: "%s | Sanatan Mahaparishad Bharat",
+  },
+  description: siteDescription,
+  keywords: [
+    "Sanatan Dharma", "Sanatan Mahaparishad Bharat", "Hinduism", "सनातन धर्म",
+    "सनातन महापरिषद् भारत", "Indian Culture", "Spirituality", "Gita", "Ramayana",
+    "Mahabharata", "Hindu Festivals", "Vedanta", "धर्म", "भारतीय संस्कृति",
+    "भगवद गीता", "रामायण", "महाभारत",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "Sanatan Mahaparishad Bharat",
+    title: siteTitle,
+    description: siteDescription,
+    images: ["/images/logo.png"],
+    locale: "hi_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+    images: ["/images/logo.png"],
+  },
+  robots: { index: true, follow: true },
 }
 
 export default function RootLayout({
@@ -35,21 +65,6 @@ export default function RootLayout({
   return (
     <html lang="hi" className={`${poppins.variable} ${notoSans.variable}`}>
       <head>
-        <title>सनातन महापरिषद् भारत | Sanatan Mahaparishad Bharat</title>
-        <meta name="description" content="भारतीय संस्कृति और सनातन धर्म की रक्षा के लिए समर्पित संस्था | An organization dedicated to the protection of Indian culture and Sanatan Dharma" />
-        <meta name="keywords" content="Sanatan Dharma, Hinduism, सनातन धर्म, Indian Culture, Spirituality, Religion, Gita, Ramayana, Mahabharata, Bhakti, Hindu Festivals, Vedanta, Yoga, Meditation, धर्म, भारतीय संस्कृति, वेद, उपनिषद, भगवद गीता, रामायण, महाभारत, पूजा, साधना" />
-        <link rel="canonical" href="https://sanatanmahaparishad.org/" />
-        {/* Open Graph tags */}
-        <meta property="og:title" content="सनातन महापरिषद् भारत | Sanatan Mahaparishad Bharat" />
-        <meta property="og:description" content="भारतीय संस्कृति और सनातन धर्म की रक्षा के लिए समर्पित संस्था | An organization dedicated to the protection of Indian culture and Sanatan Dharma" />
-        <meta property="og:image" content="/images/logo.png" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://sanatanmahaparishad.org/" />
-        {/* Twitter Card tags */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="सनातन महापरिषद् भारत | Sanatan Mahaparishad Bharat" />
-        <meta name="twitter:description" content="भारतीय संस्कृति और सनातन धर्म की रक्षा के लिए समर्पित संस्था | An organization dedicated to the protection of Indian culture and Sanatan Dharma" />
-        <meta name="twitter:image" content="/images/logo.png" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: `{
           "@context": "https://schema.org",
           "@type": "Organization",

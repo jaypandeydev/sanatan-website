@@ -1,3 +1,9 @@
 User-agent: *
 Allow: /
-Sitemap: https://sanatanmahaparishad.org/sitemap.xml 
+Disallow: /api/
+Disallow: /login
+Disallow: /messages
+Disallow: /add-official
+Disallow: /members
+
+Sitemap: https://sanatanmahaparishad.org/sitemap.xml
