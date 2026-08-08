@@ -13,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/contact", priority: 0.7 },
   ]
 
-  const blogIds = ["1", "2", "3"]
+  const blogIds = ["1", "2", "3", "4", "5", "6"]
 
   return [
     ...staticRoutes.map(({ path, priority }) => ({

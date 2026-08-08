@@ -61,6 +61,17 @@ const dummyBlogs = [
       hi: "जानें कि सनातन धर्म के ध्यान और मंत्र कैसे आंतरिक शांति और संतुलन ला सकते हैं।",
     },
   },
+  {
+    id: 6,
+    title: {
+      en: "What Is Panchang? Understanding the Hindu Calendar and Its Five Limbs",
+      hi: "पंचांग क्या है? हिंदू कैलेंडर और उसके पाँच अंगों को समझें",
+    },
+    summary: {
+      en: "Tithi, Vara, Nakshatra, Yoga and Karana — learn how the Panchang works, why festival dates change every year, and what a Shubh Muhurta really means.",
+      hi: "तिथि, वार, नक्षत्र, योग और करण — जानें पंचांग कैसे काम करता है, त्योहारों की तिथियाँ हर वर्ष क्यों बदलती हैं, और शुभ मुहूर्त का वास्तविक अर्थ क्या है।",
+    },
+  },
 ];
 
 export default function BlogsPage() {

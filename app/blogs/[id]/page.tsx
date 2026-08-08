@@ -1,10 +1,8 @@
 "use client";
 
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useRouter } from "next/router";
 import { useParams } from "next/navigation";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import Head from "next/head";
 
 const blogContents: Record<string, { title: { en: string; hi: string }, content: { en: string; hi: string } }> = {
   "1": {
@@ -197,6 +195,178 @@ Justice (Nyaya) – Making ethical and balanced decisions in life.
 Dharma is not just religion—it is a path of harmony and responsibility in every step of life.`,
     },
   },
+  "4": {
+    title: {
+      en: "Karma and Rebirth: The Cycle of Life in Hindu Thought",
+      hi: "कर्म और पुनर्जन्म: हिंदू विचार में जीवन का चक्र",
+    },
+    content: {
+      en: `Karma and Rebirth – The Cycle of Life in Hindu Thought
+
+Few ideas from Sanatan Dharma have travelled as far across the world as Karma. Yet its true meaning is often reduced to "what goes around comes around." In Hindu philosophy, Karma and rebirth together form a complete vision of life, responsibility, and spiritual evolution.
+
+🔄 What Is Karma?
+Karma literally means "action." Every action — physical, verbal, or mental — leaves an imprint. Good actions (punya) create positive results; harmful actions (paap) create suffering. Karma is not punishment or reward from an angry god; it is a natural law, as impartial as gravity.
+
+The Bhagavad Gita teaches: "You have a right to your actions, but never to the fruits of your actions." This is Nishkama Karma — acting with full sincerity while surrendering the outcome.
+
+🌱 The Three Types of Karma
+Sanchita Karma – the accumulated store of all past actions across lifetimes.
+Prarabdha Karma – the portion of that store which shapes this present life: our birth, family, and circumstances.
+Kriyamana Karma – the fresh karma we create right now, through today's choices.
+
+The past explains our situation, but the present is always in our hands. This is why Hindu thought is not fatalistic — it places responsibility for the future squarely on us.
+
+🕊️ Rebirth: The Journey of the Soul
+The Atman (soul) is eternal. The Gita compares death to changing clothes: "As a person puts on new garments, giving up the old ones, the soul similarly accepts new bodies." Rebirth gives the soul repeated opportunities to learn, grow, and eventually attain Moksha — liberation from the cycle of birth and death.
+
+🧭 Why This Matters Today
+Understanding Karma changes how we live. It brings accountability (my choices matter), patience (results ripen in their own time), compassion (every being carries its own journey), and hope (no situation is final — the next action can change everything).
+
+Karma is not fate. It is the most empowering idea ever given to humanity: your life is built by your own actions, and your future begins now.`,
+      hi: `कर्म और पुनर्जन्म – हिंदू विचार में जीवन का चक्र
+
+सनातन धर्म का कोई विचार विश्व में उतना प्रसिद्ध नहीं हुआ जितना "कर्म"। परंतु इसका वास्तविक अर्थ अक्सर "जैसा बोओगे वैसा काटोगे" तक सीमित कर दिया जाता है। हिंदू दर्शन में कर्म और पुनर्जन्म मिलकर जीवन, उत्तरदायित्व और आध्यात्मिक विकास की एक संपूर्ण दृष्टि प्रस्तुत करते हैं।
+
+🔄 कर्म क्या है?
+कर्म का शाब्दिक अर्थ है "क्रिया"। प्रत्येक कार्य — शारीरिक, वाचिक या मानसिक — अपनी छाप छोड़ता है। शुभ कर्म (पुण्य) सकारात्मक फल देते हैं; अशुभ कर्म (पाप) दुख उत्पन्न करते हैं। कर्म किसी क्रोधित देवता का दंड या पुरस्कार नहीं है; यह गुरुत्वाकर्षण की भांति एक निष्पक्ष प्राकृतिक नियम है।
+
+भगवद गीता का उपदेश है: "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन" — कर्म करना तुम्हारा अधिकार है, फल की चिंता नहीं। यही निष्काम कर्म है — पूर्ण निष्ठा से कार्य करते हुए परिणाम ईश्वर को समर्पित करना।
+
+🌱 कर्म के तीन प्रकार
+संचित कर्म – अनेक जन्मों के समस्त कर्मों का संचित भंडार।
+प्रारब्ध कर्म – संचित का वह अंश जो वर्तमान जीवन को आकार देता है: हमारा जन्म, परिवार और परिस्थितियाँ।
+क्रियमाण कर्म – वह नया कर्म जो हम अभी, आज के निर्णयों से बना रहे हैं।
+
+अतीत हमारी परिस्थिति की व्याख्या करता है, परंतु वर्तमान सदैव हमारे हाथ में है। इसीलिए हिंदू चिंतन भाग्यवादी नहीं है — यह भविष्य का उत्तरदायित्व हमें ही सौंपता है।
+
+🕊️ पुनर्जन्म: आत्मा की यात्रा
+आत्मा अजर-अमर है। गीता मृत्यु की तुलना वस्त्र बदलने से करती है: "जैसे मनुष्य पुराने वस्त्र त्याग कर नए वस्त्र धारण करता है, वैसे ही आत्मा पुराने शरीर त्याग कर नए शरीर धारण करती है।" पुनर्जन्म आत्मा को सीखने, विकसित होने और अंततः मोक्ष — जन्म-मृत्यु के चक्र से मुक्ति — प्राप्त करने के बार-बार अवसर देता है।
+
+🧭 आज के जीवन में महत्व
+कर्म को समझना जीवन जीने का ढंग बदल देता है। यह उत्तरदायित्व सिखाता है (मेरे निर्णय महत्वपूर्ण हैं), धैर्य देता है (फल अपने समय पर पकता है), करुणा जगाता है (हर प्राणी अपनी यात्रा पर है), और आशा देता है (कोई स्थिति अंतिम नहीं — अगला कर्म सब बदल सकता है)।
+
+कर्म भाग्य नहीं है। यह मानवता को दिया गया सबसे सशक्त विचार है: आपका जीवन आपके अपने कर्मों से बनता है, और आपका भविष्य अभी से आरंभ होता है।`,
+    },
+  },
+  "5": {
+    title: {
+      en: "Meditation and Mantras: Tools for Inner Peace from Sanatan Dharma",
+      hi: "ध्यान और मंत्र: सनातन धर्म से आंतरिक शांति के साधन",
+    },
+    content: {
+      en: `Meditation and Mantras – Tools for Inner Peace from Sanatan Dharma
+
+In an age of stress, screens, and constant noise, the world is rediscovering what the rishis of India knew thousands of years ago: peace is not found outside — it is uncovered within. Meditation (Dhyana) and Mantra are Sanatan Dharma's timeless gifts for this inner journey.
+
+🧘 Dhyana: The Original Meditation
+Long before "mindfulness" became a global industry, Patanjali's Yoga Sutras described an eight-limbed path (Ashtanga Yoga) leading to Dhyana — unbroken, effortless attention — and finally Samadhi, complete absorption. Meditation in the Hindu tradition is not merely relaxation; it is the systematic turning of awareness inward, from the body to the breath, from the breath to the mind, and from the mind to the Self (Atman).
+
+Modern research now confirms what practitioners always experienced: regular meditation lowers stress hormones, improves focus and sleep, and strengthens emotional balance.
+
+🕉️ The Power of Mantra
+A mantra is a sacred sound formula. The word itself means "that which protects the mind" (manas + trana). Sound is vibration, and repeated sacred sound steadies the restless mind like a anchor steadies a boat.
+
+Om (ॐ) – the primordial vibration, chanted at the beginning of prayers and meditation.
+Gayatri Mantra – a prayer to the divine light to illuminate our intellect.
+Mahamrityunjaya Mantra – chanted for healing, courage, and freedom from fear.
+Hare Krishna / Ram Nam – simple japa (repetition) that fills the heart with devotion.
+
+🌸 How to Begin a Simple Practice
+1. Sit comfortably at the same time each day — early morning (Brahma Muhurta) is ideal.
+2. Take a few slow breaths and let the body settle.
+3. Chant Om or your chosen mantra softly, then mentally, 21 or 108 times (a mala helps).
+4. Sit in silence for a few minutes, simply observing.
+5. Start with 10 minutes daily; consistency matters more than duration.
+
+🌟 The Goal Is Transformation
+The purpose of meditation and mantra is not escape from life but excellence in it — a calm mind, a compassionate heart, and the gradual realization that the peace we seek is our own true nature.
+
+As the Upanishads declare: Shanti, Shanti, Shanti — peace in body, peace in mind, peace in spirit.`,
+      hi: `ध्यान और मंत्र – सनातन धर्म से आंतरिक शांति के साधन
+
+तनाव, स्क्रीन और निरंतर शोर के इस युग में विश्व आज वही खोज रहा है जो भारत के ऋषि-मुनि हजारों वर्ष पूर्व जानते थे: शांति बाहर नहीं मिलती — वह भीतर प्रकट होती है। ध्यान और मंत्र इसी आंतरिक यात्रा के लिए सनातन धर्म के कालातीत उपहार हैं।
+
+🧘 ध्यान: मूल साधना
+"माइंडफुलनेस" के वैश्विक उद्योग बनने से बहुत पहले, पतंजलि के योगसूत्रों में अष्टांग योग का वर्णन है, जो ध्यान — अखंड, सहज एकाग्रता — और अंततः समाधि तक ले जाता है। हिंदू परंपरा में ध्यान केवल विश्राम नहीं है; यह चेतना को क्रमशः भीतर मोड़ने की विधि है — शरीर से श्वास तक, श्वास से मन तक, और मन से आत्मा तक।
+
+आधुनिक शोध आज उसी की पुष्टि करता है जो साधक सदा अनुभव करते आए हैं: नियमित ध्यान तनाव घटाता है, एकाग्रता और नींद सुधारता है, तथा भावनात्मक संतुलन को सशक्त करता है।
+
+🕉️ मंत्र की शक्ति
+मंत्र एक पवित्र ध्वनि-सूत्र है। "मननात् त्रायते इति मंत्रः" — जो मन की रक्षा करे, वही मंत्र है। ध्वनि कंपन है, और पवित्र ध्वनि की पुनरावृत्ति चंचल मन को वैसे ही स्थिर करती है जैसे लंगर नाव को।
+
+ॐ – आदि ध्वनि, प्रार्थना और ध्यान के आरंभ में उच्चारित।
+गायत्री मंत्र – बुद्धि को प्रकाशित करने हेतु दिव्य ज्योति की प्रार्थना।
+महामृत्युंजय मंत्र – आरोग्य, साहस और भय-मुक्ति के लिए।
+हरे कृष्ण / राम नाम – सरल जप जो हृदय को भक्ति से भर देता है।
+
+🌸 सरल अभ्यास कैसे आरंभ करें
+1. प्रतिदिन एक ही समय पर सुखासन में बैठें — ब्रह्म मुहूर्त सर्वोत्तम है।
+2. कुछ धीमी गहरी श्वास लें और शरीर को शांत होने दें।
+3. ॐ या अपना चुना हुआ मंत्र पहले धीमे स्वर में, फिर मन ही मन 21 या 108 बार जपें (माला सहायक है)।
+4. कुछ मिनट मौन में बैठें, केवल साक्षी भाव से देखें।
+5. प्रतिदिन 10 मिनट से आरंभ करें; अवधि से अधिक नियमितता महत्वपूर्ण है।
+
+🌟 लक्ष्य है रूपांतरण
+ध्यान और मंत्र का उद्देश्य जीवन से पलायन नहीं, जीवन में उत्कृष्टता है — शांत मन, करुणामय हृदय, और यह क्रमिक अनुभूति कि जिस शांति को हम खोज रहे हैं, वही हमारा वास्तविक स्वरूप है।
+
+उपनिषद घोषणा करते हैं: ॐ शांतिः शांतिः शांतिः — शरीर में शांति, मन में शांति, आत्मा में शांति।`,
+    },
+  },
+  "6": {
+    title: {
+      en: "What Is Panchang? Understanding the Hindu Calendar and Its Five Limbs",
+      hi: "पंचांग क्या है? हिंदू कैलेंडर और उसके पाँच अंगों को समझें",
+    },
+    content: {
+      en: `What Is Panchang? – Understanding the Hindu Calendar and Its Five Limbs
+
+Why does Diwali fall on a different date every year? Why do families consult a priest before fixing a wedding date? The answer lies in the Panchang — the traditional Hindu calendar and almanac that has guided Indian life for thousands of years.
+
+📅 The Meaning of Panchang
+Panchang (पंचांग) comes from two Sanskrit words: pancha (five) and anga (limbs). It is the calculation of five elements of time for each day:
+
+1. Tithi (lunar day) – the phase of the Moon; there are 30 tithis in a lunar month, such as Purnima (full moon) and Amavasya (new moon).
+2. Vara (weekday) – the seven days, each ruled by a celestial body (Somvar by the Moon, Mangalvar by Mars, and so on).
+3. Nakshatra (lunar mansion) – the 27 star constellations through which the Moon travels; each carries its own nature.
+4. Yoga – a calculated combination of the Sun's and Moon's positions; 27 yogas, some auspicious, some challenging.
+5. Karana – half of a tithi; 11 karanas that repeat through the month.
+
+🌙 Why Hindu Festivals Change Dates
+The Hindu calendar is luni-solar: months follow the Moon, while the year stays aligned with the Sun. Festivals are fixed by tithi, not by the Gregorian date — Diwali is always Kartik Amavasya, Ram Navami is always the ninth tithi of Chaitra. Since lunar months are about 29.5 days, the Gregorian date shifts every year.
+
+⏰ Muhurta: Choosing the Right Moment
+One of the Panchang's most practical uses is finding a Shubh Muhurta — an auspicious time window for important beginnings: marriage, griha pravesh (housewarming), naming ceremonies, or starting a new venture. The Panchang also marks periods traditionally avoided for new beginnings, such as Rahu Kaal.
+
+🧭 A Living Tradition
+Far from being a relic, the Panchang remains a daily companion in crores of Indian homes. It connects daily life to the rhythms of the cosmos — reminding us that in Sanatan Dharma, time itself is sacred. Kaal (time) is a form of the divine, and living in harmony with its cycles is a spiritual practice.
+
+Next time you see an elder consulting the Panchang before a journey or a festival, you will know: they are reading a science of time refined over millennia.`,
+      hi: `पंचांग क्या है? – हिंदू कैलेंडर और उसके पाँच अंगों को समझें
+
+दीपावली हर वर्ष अलग-अलग तारीख को क्यों आती है? विवाह की तिथि निश्चित करने से पहले पंडित जी से मुहूर्त क्यों पूछा जाता है? इसका उत्तर है पंचांग — वह पारंपरिक हिंदू कैलेंडर और ज्योतिषीय पत्रिका जो हजारों वर्षों से भारतीय जीवन का मार्गदर्शन कर रही है।
+
+📅 पंचांग का अर्थ
+पंचांग दो संस्कृत शब्दों से बना है: पंच (पाँच) और अंग। यह प्रत्येक दिन के लिए काल के पाँच तत्वों की गणना है:
+
+1. तिथि – चंद्रमा की कला; एक चांद्र मास में 30 तिथियाँ होती हैं, जैसे पूर्णिमा और अमावस्या।
+2. वार – सप्ताह के सात दिन, प्रत्येक का स्वामी एक ग्रह है (सोमवार का चंद्रमा, मंगलवार का मंगल, आदि)।
+3. नक्षत्र – 27 तारा-समूह जिनसे होकर चंद्रमा भ्रमण करता है; प्रत्येक का अपना स्वभाव है।
+4. योग – सूर्य और चंद्रमा की स्थितियों का गणितीय संयोग; 27 योग, कुछ शुभ, कुछ चुनौतीपूर्ण।
+5. करण – तिथि का आधा भाग; 11 करण जो मास भर क्रम से आते हैं।
+
+🌙 हिंदू त्योहारों की तिथियाँ क्यों बदलती हैं
+हिंदू कैलेंडर चांद्र-सौर है: मास चंद्रमा के अनुसार चलते हैं, जबकि वर्ष सूर्य से जुड़ा रहता है। त्योहार तिथि से निर्धारित होते हैं, अंग्रेजी तारीख से नहीं — दीपावली सदैव कार्तिक अमावस्या को होती है, राम नवमी सदैव चैत्र शुक्ल नवमी को। चूंकि चांद्र मास लगभग 29.5 दिन का होता है, ग्रेगोरियन तारीख हर वर्ष बदल जाती है।
+
+⏰ मुहूर्त: उचित समय का चयन
+पंचांग का सबसे व्यावहारिक उपयोग है शुभ मुहूर्त निकालना — विवाह, गृह प्रवेश, नामकरण या नए कार्य के आरंभ के लिए शुभ समय। पंचांग उन कालों को भी बताता है जिनमें नए कार्य का आरंभ पारंपरिक रूप से वर्जित है, जैसे राहु काल।
+
+🧭 एक जीवंत परंपरा
+पंचांग कोई पुरानी वस्तु नहीं — यह आज भी करोड़ों भारतीय घरों का दैनिक साथी है। यह दैनिक जीवन को ब्रह्मांड की लय से जोड़ता है — और स्मरण कराता है कि सनातन धर्म में काल स्वयं पवित्र है। काल ईश्वर का ही स्वरूप है, और उसके चक्रों के साथ सामंजस्य में जीना एक साधना है।
+
+अगली बार जब आप किसी बुजुर्ग को यात्रा या त्योहार से पहले पंचांग देखते हुए पाएँ, तो समझ जाइए: वे सहस्राब्दियों में परिष्कृत काल-विज्ञान का अध्ययन कर रहे हैं।`,
+    },
+  },
 };
 
 export default function BlogDetailPage() {
@@ -204,32 +374,9 @@ export default function BlogDetailPage() {
   const params = useParams();
   const id = params?.id as string;
   const blog = blogContents[id];
-  const blogTitle = blog ? blog.title[language] : "";
-  const blogDescription = blog ? (blog.content[language].split("\n")[0] || blog.content[language].slice(0, 160)) : "";
-  const blogUrl = `https://sanatanmahaparishad.org/blogs/${id}`;
-  const blogImage = "https://sanatanmahaparishad.org/images/logo.png";
 
   return (
     <>
-      <Head>
-        <title>{blogTitle}</title>
-        <meta name="description" content={blogDescription} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Article",
-          "headline": blogTitle,
-          "description": blogDescription,
-          "author": {
-            "@type": "Organization",
-            "name": "Sanatan Mahaparishad Bharat"
-          },
-          "datePublished": "2024-05-01",
-          "image": blogImage,
-          "inLanguage": language === "hi" ? "hi" : "en",
-          "mainEntityOfPage": blogUrl,
-          "url": blogUrl
-        }) }} />
-      </Head>
       <div className="container mx-auto px-4 py-12">
         <Card className="max-w-3xl mx-auto bg-white/90 shadow-md border border-orange-200">
           <CardHeader>
