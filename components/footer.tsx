@@ -67,8 +67,14 @@ export default function Footer() {
               <Link href="/join" className="hover:text-red-600 transition-colors">
                 {language === "hi" ? "सदस्यता" : "Membership"}
               </Link>
-              <Link href="/resources" className="hover:text-red-600 transition-colors">
-                {t.resources}
+              <Link href="/blogs" className="hover:text-red-600 transition-colors">
+                {language === "hi" ? "ब्लॉग" : "Blogs"}
+              </Link>
+              <Link href="/officials" className="hover:text-red-600 transition-colors">
+                {language === "hi" ? "पदाधिकारी" : "Officials"}
+              </Link>
+              <Link href="/contact" className="hover:text-red-600 transition-colors">
+                {t.contact}
               </Link>
               <Link href="/privacy-policy" className="hover:text-red-600 transition-colors">
                 {t.privacyPolicy}
