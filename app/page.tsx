@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Shield, BookOpen, Landmark, AlertTriangle } from "lucide-react"
+import { Shield, BookOpen, Landmark, AlertTriangle, CalendarDays } from "lucide-react"
 import { useLanguage } from "@/contexts/LanguageContext"
 import Link from "next/link"
 import { useState } from "react"
@@ -321,6 +321,28 @@ export default function Home() {
                   </form>
                 )}
               </div>
+            </div>
+          </div>
+
+          <div className="mt-4 md:mt-6 bg-amber-50 border border-amber-200 rounded-lg shadow-sm px-5 py-4 flex items-center gap-4">
+            <div className="hidden sm:flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-800">
+              <CalendarDays className="h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-xs font-semibold text-amber-700 uppercase tracking-wider mb-0.5">
+                {language === "hi" ? "आज का पंचांग" : "Today's Panchang"}
+              </div>
+              <p className="text-sm md:text-base text-amber-900 leading-snug">
+                {language === "hi"
+                  ? "आज की तिथि, नक्षत्र, राहु काल, शुभ मुहूर्त और हिंदू त्योहार देखें।"
+                  : "Check today's Tithi, Nakshatra, Rahu Kaal, Shubh Muhurat and Hindu festivals."}{" "}
+                <a
+                  href={language === "hi" ? "https://vedjyotix.com/hi/panchang" : "https://vedjyotix.com/en/panchang"}
+                  className="text-red-700 font-medium underline hover:text-red-600"
+                >
+                  {language === "hi" ? "VedJyotix पर आज का पंचांग देखें →" : "View Today's Panchang on VedJyotix →"}
+                </a>
+              </p>
             </div>
           </div>
         </div>
