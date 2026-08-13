@@ -386,9 +386,39 @@ export default function BlogDetailPage() {
           </CardHeader>
           <CardContent>
             {blog ? (
-              <pre className="whitespace-pre-wrap text-gray-800 text-base font-sans">
-                {blog.content[language]}
-              </pre>
+              <>
+                <pre className="whitespace-pre-wrap text-gray-800 text-base font-sans">
+                  {blog.content[language]}
+                </pre>
+                {id === "6" && (
+                  <p className="mt-6 pt-4 border-t border-orange-200 text-gray-800 text-base">
+                    {language === "hi" ? (
+                      <>
+                        आज की तिथि, नक्षत्र, त्योहारों की तिथियाँ और शुभ मुहूर्त देखने के लिए{" "}
+                        <a
+                          href="https://vedjyotix.com"
+                          className="text-red-700 font-medium underline hover:text-red-600"
+                        >
+                          VedJyotix हिंदू कैलेंडर और पंचांग
+                        </a>{" "}
+                        देखें — पंचांग, मुहूर्त, कुंडली और वैदिक ज्योतिष के लिए एक निःशुल्क ऑनलाइन संसाधन।
+                      </>
+                    ) : (
+                      <>
+                        To see these five limbs in action, check today&apos;s Tithi, Nakshatra, Hindu
+                        festival dates and Shubh Muhurat on{" "}
+                        <a
+                          href="https://vedjyotix.com"
+                          className="text-red-700 font-medium underline hover:text-red-600"
+                        >
+                          VedJyotix Hindu Calendar &amp; Panchang
+                        </a>{" "}
+                        — a free online resource for Panchang, Muhurat, Kundali and Vedic astrology.
+                      </>
+                    )}
+                  </p>
+                )}
+              </>
             ) : (
               <div className="text-gray-700 text-center py-8">
                 {language === "hi" ? "यह ब्लॉग अभी उपलब्ध नहीं है।" : "This blog is not available yet."}
