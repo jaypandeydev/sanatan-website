@@ -396,7 +396,7 @@ export default function BlogDetailPage() {
                       <>
                         आज की तिथि, नक्षत्र, त्योहारों की तिथियाँ और शुभ मुहूर्त देखने के लिए{" "}
                         <a
-                          href="https://vedjyotix.com"
+                          href="https://vedjyotix.com/hi/panchang"
                           className="text-red-700 font-medium underline hover:text-red-600"
                         >
                           VedJyotix हिंदू कैलेंडर और पंचांग
@@ -408,7 +408,7 @@ export default function BlogDetailPage() {
                         To see these five limbs in action, check today&apos;s Tithi, Nakshatra, Hindu
                         festival dates and Shubh Muhurat on{" "}
                         <a
-                          href="https://vedjyotix.com"
+                          href="https://vedjyotix.com/en/panchang"
                           className="text-red-700 font-medium underline hover:text-red-600"
                         >
                           VedJyotix Hindu Calendar &amp; Panchang
