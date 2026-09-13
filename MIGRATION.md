@@ -167,16 +167,35 @@ change in `lib/emailTemplate.ts` usage rather than SMTP.
 
 ---
 
-## Step 6 — Point the domain at Vercel
+## Steps 4-6 — Vercel + DNS  ✅ DONE (13 Sep)
 
-In Vercel: **Project -> Settings -> Domains -> Add** your domain. Vercel shows
-the exact records. Then in Hostinger's DNS panel:
+Live at **https://sanatanmahaparishad.org**.
 
-- Apex `@` -> **A** record -> the IP Vercel gives you
-- `www` -> **CNAME** -> `cname.vercel-dns.com`
+| | |
+|---|---|
+| Project | `sanatan-website` (Hobby), production alias `sanatan-website-vert.vercel.app` |
+| Edge / Functions | `bom1` (Mumbai) / `sin1` (Singapore, matching Neon) |
+| Apex | `sanatanmahaparishad.org` → Production |
+| www | 308 → apex (matches canonical tags in `app/layout.tsx` and `app/sitemap.ts`) |
+| TLS | Let's Encrypt, issued 13 Sep, auto-renewing |
 
-Lower the TTL to 300 a few hours beforehand so the cutover is quick. SSL is
-issued automatically by Vercel once DNS resolves; no certbot, no renewals.
+DNS: exactly one record changed in Hostinger, `A @ 147.93.106.12 -> 216.198.79.1`
+(TTL 300). Everything else untouched - MX, SPF, DKIM x3, DMARC, autodiscover,
+autoconfig, Google verification - so email continues to work. `www` stays a
+CNAME to the apex and follows it.
+
+Verified live: all 10 pages 200, `/api/health` reports the database connected,
+`/api/officials` returns 4 records from Neon, sitemap emits the non-www
+canonical host.
+
+**Rollback**, if ever needed: set `A @` back to `147.93.106.12`. Takes about
+five minutes at TTL 300.
+
+### Not yet verified (needs a human)
+
+- `/login` with the rotated `JWT_SECRET`
+- Adding an official with a photo (exercises Cloudinary + the 401 auth fix)
+- `/contact` and `/join` submissions (these send real email and write real rows)
 
 ---
 
