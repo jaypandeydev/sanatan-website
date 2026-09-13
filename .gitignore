@@ -34,3 +34,7 @@ next-env.d.ts
 .coolify
 .DS_Store
 *.pdb
+
+# neon connection strings (local only)
+.env.neon
+.env.vercel

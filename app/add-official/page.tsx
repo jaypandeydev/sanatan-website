@@ -104,11 +104,12 @@ export default function AddOfficialPage() {
       try {
         const uploadRes = await fetch("/api/upload-official-image", {
           method: "POST",
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
           body: formData,
         });
         if (uploadRes.ok) {
           const data = await uploadRes.json();
-          imagePath = data.filename;
+          imagePath = data.url;
         } else {
           const err = await uploadRes.json().catch(() => ({}));
           setFormError((err && err.error) || t[language].imageUploadError);
@@ -124,7 +125,10 @@ export default function AddOfficialPage() {
     try {
       const res = await fetch("/api/officials", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
         body: JSON.stringify({
           name: form.name,
           designation: form.designation,

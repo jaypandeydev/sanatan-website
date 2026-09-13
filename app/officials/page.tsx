@@ -6,8 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Mail, Phone } from "lucide-react";
 import { ChangeEvent } from "react";
-
-const placeholderImg = "/images/officials/placeholder.png";
+import { officialImageSrc, officialPlaceholderImg } from "@/lib/officialImage";
 
 const INDIAN_STATES = [
   "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
@@ -118,11 +117,12 @@ export default function OfficialsPage() {
       try {
         const uploadRes = await fetch("/api/upload-official-image", {
           method: "POST",
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
           body: formData,
         });
         if (uploadRes.ok) {
           const data = await uploadRes.json();
-          imagePath = data.filename;
+          imagePath = data.url;
         } else {
           const err = await uploadRes.json().catch(() => ({}));
           setFormError((err && err.error) || (language === "hi" ? "छवि अपलोड विफल!" : "Image upload failed!"));
@@ -138,7 +138,10 @@ export default function OfficialsPage() {
     try {
       const res = await fetch("/api/officials", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
         body: JSON.stringify({
           name: form.name,
           designation: form.designation,
@@ -230,10 +233,10 @@ export default function OfficialsPage() {
           <Card key={i} className="bg-white/90 border border-orange-200 shadow-sm flex flex-row items-center">
             <div className="flex-shrink-0 flex items-center justify-center w-20 h-20 m-4 rounded-full bg-orange-100 overflow-hidden">
               <img
-                src={o.imagePath ? `/images/officials/${o.imagePath}` : placeholderImg}
+                src={officialImageSrc(o.imagePath)}
                 alt={o.name}
                 className="w-20 h-20 object-cover rounded-full"
-                onError={(e: any) => (e.target.src = placeholderImg)}
+                onError={(e: any) => (e.target.src = officialPlaceholderImg)}
               />
             </div>
             <div className="flex-1 p-4">

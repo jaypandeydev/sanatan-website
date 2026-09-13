@@ -1,14 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { promises as fs } from 'fs'
-import path from 'path'
 import { randomUUID } from 'crypto'
 import { verifyAdminToken, unauthorizedResponse } from '@/lib/auth'
+import { isCloudinaryConfigured, uploadOfficialImage } from '@/lib/cloudinary'
 
-export const maxSize = 1024 * 1024 // 1MB
+const maxSize = 1024 * 1024 // 1MB
 
 export async function POST(req: NextRequest) {
   const token = verifyAdminToken(req);
   if (!token) return unauthorizedResponse();
+
+  if (!isCloudinaryConfigured()) {
+    return NextResponse.json({ error: 'Image storage is not configured' }, { status: 500 })
+  }
 
   try {
     const formData = await req.formData()
@@ -19,14 +22,8 @@ export async function POST(req: NextRequest) {
     }
 
     // ✅ Allow ONLY specific MIME types
-    const allowedTypes: Record<string, string> = {
-      'image/jpeg': '.jpg',
-      'image/png': '.png',
-      'image/webp': '.webp',
-    }
-
-    const ext = allowedTypes[file.type]
-    if (!ext) {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+    if (!allowedTypes.includes(file.type)) {
       return NextResponse.json({ error: 'Invalid file type' }, { status: 400 })
     }
 
@@ -38,16 +35,10 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
-    // ✅ Generate safe filename (DO NOT use user filename)
-    const filename = `${randomUUID()}${ext}`
+    // ✅ Generate safe public id (DO NOT use user filename)
+    const url = await uploadOfficialImage(buffer, randomUUID())
 
-    const dirPath = path.join(process.cwd(), 'public', 'images', 'officials')
-    const uploadPath = path.join(dirPath, filename)
-
-    await fs.mkdir(dirPath, { recursive: true })
-    await fs.writeFile(uploadPath, buffer)
-
-    return NextResponse.json({ filename })
+    return NextResponse.json({ url })
   } catch (err: any) {
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 })
   }
