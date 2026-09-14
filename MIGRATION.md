@@ -199,6 +199,43 @@ five minutes at TTL 300.
 
 ---
 
+## The "malware" was contact-form spam
+
+Reported as malware; it was a spam bot posting to the two public forms.
+
+```
+2026-09-14 |  9   <- the day after the cutover, ON VERCEL
+2026-07-24 |  1
+2025-12-03 |  3
+2025-11-13 |  3
+2025-10-13 |  3   <- running since roughly Oct 2025
+```
+
+It predates the migration by ~11 months and continued afterwards, which
+settles it: not a server compromise, and changing hosts was never going to
+stop it. Form spam writes database rows and sends email; it never writes files
+a scanner could flag. Monarx reported `malicious: 0`, and
+`clamav-incident-scan.txt` was empty.
+
+Both forms accepted anything non-empty. Of 35 stored messages, **35 were spam** -
+not one contained a space. On the membership form, 9 of 11 recent rows were the
+same bot, hitting both endpoints within seconds of each other using identical
+addresses.
+
+Fixed in `lib/spamFilter.ts` and both routes: honeypot field, email format
+check, single-token-body rule, vowel-ratio and consonant-run heuristics, link
+counting, and a 3-per-IP-per-hour rate limit keyed on a SHA-256 of the address.
+Non-Latin scripts skip the letter heuristics, so Hindi submissions are never
+affected. Spam is dropped with a 200 and no stored row - an error status only
+invites a retry.
+
+Verified against the real data: 35/35 spam messages and 9/9 spam membership
+rows blocked; 6 hand-written samples and both genuine recent signups allowed.
+The exact payloads from the reported emails were replayed against production
+and stored nothing.
+
+---
+
 ## What was actually wrong with the VPS
 
 Measured on the running box (13 Sep, four minutes after boot):
