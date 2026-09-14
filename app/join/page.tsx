@@ -65,6 +65,7 @@ export default function JoinPage() {
   })
   const [formData, setFormData] = useState<Partial<FormData>>({
     membershipType: "lifetime",
+    website: "",
   })
 
   const content = {
@@ -241,7 +242,7 @@ export default function JoinPage() {
             isError: false,
             fieldErrors: {}, // ✅ reset field errors
           });
-          setFormData({ membershipType: "lifetime" });
+          setFormData({ membershipType: "lifetime", website: "" });
           setApplicationDate(new Date());
         } else {
           const serverErrors = result.fieldErrors ?? {}; // ✅ fallback
@@ -285,6 +286,20 @@ export default function JoinPage() {
             </Alert>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-8" noValidate>
+              {/* Honeypot: off-screen rather than display:none, since some bots
+                  skip hidden inputs. A filled value means an automated post. */}
+              <div className="absolute left-[-9999px] top-auto w-px h-px overflow-hidden" aria-hidden="true">
+                <label htmlFor="website">Website</label>
+                <input
+                  id="website"
+                  name="website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={formData.website ?? ""}
+                  onChange={handleInputChange}
+                />
+              </div>
             {formState.isError && (
               <Alert className="bg-red-50/60 border-red-200">
                 <AlertCircle className="h-5 w-5 text-red-600" />

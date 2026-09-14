@@ -40,6 +40,11 @@ model Message {
   phone     String?
   message   String
   createdAt DateTime @default(now())
+  // SHA-256 of the submitter IP, for rate limiting. Hashed rather than stored
+  // raw so the table holds no directly identifying network data.
+  ipHash    String?
+
+  @@index([ipHash, createdAt])
 }
 
 model Members {
@@ -62,4 +67,7 @@ model Members {
   introducer         String?
   createdAt          DateTime @default(now())
   membershipStatus   String?
+  ipHash            String?
+
+  @@index([ipHash, createdAt])
 } 

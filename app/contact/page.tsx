@@ -86,7 +86,7 @@ export default function ContactPage() {
 
   const t = content[language];
 
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", message: "" });
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", message: "", website: "" });
   const [formLoading, setFormLoading] = useState(false);
   const [formSuccess, setFormSuccess] = useState("");
   const [formError, setFormError] = useState("");
@@ -114,7 +114,7 @@ export default function ContactPage() {
       });
       if (res.ok) {
         setFormSuccess("Message sent successfully!");
-        setFormData({ name: "", email: "", phone: "", message: "" });
+        setFormData({ name: "", email: "", phone: "", message: "", website: "" });
       } else {
         setFormError("Failed to send message.");
       }
@@ -167,6 +167,22 @@ export default function ContactPage() {
         <div className="bg-white/30 backdrop-blur-sm rounded-lg p-6">
           <h2 className="text-2xl font-bold text-red-800 mb-6">{t.form.title}</h2>
           <form className="space-y-6" noValidate onSubmit={handleSubmit}>
+            {/* Honeypot: hidden from people, irresistible to bots. A non-empty
+                value means the submission is automated. Not display:none --
+                some bots skip those -- and aria-hidden keeps it off screen
+                readers. */}
+            <div className="absolute left-[-9999px] top-auto w-px h-px overflow-hidden" aria-hidden="true">
+              <label htmlFor="website">Website</label>
+              <input
+                id="website"
+                name="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={formData.website}
+                onChange={handleInputChange}
+              />
+            </div>
             <div className="space-y-2">
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                 {t.form.name}

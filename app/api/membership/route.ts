@@ -4,6 +4,19 @@ import { prisma } from "@/lib/prisma";
 import nodemailer from "nodemailer";
 import { getEmailContent } from "@/lib/emailTemplate";
 import { getLocalizedErrors } from "@/lib/localizeErrors";
+import { createHash } from "crypto";
+import { classifyMembership } from "@/lib/spamFilter";
+
+/** At most this many accepted applications per IP per hour. */
+const RATE_LIMIT = 3;
+const RATE_WINDOW_MS = 60 * 60 * 1000;
+
+function ipHashOf(req: NextRequest) {
+  const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim()
+    || req.headers.get("x-real-ip")
+    || "unknown";
+  return createHash("sha256").update(ip).digest("hex");
+}
 
 // ✅ Zod schema
 const formSchema = z.object({
@@ -28,12 +41,32 @@ const formSchema = z.object({
   introducedBy: z.string().optional().nullable(),
   introducer: z.string().optional().nullable(),
   language: z.enum(["en", "hi"]).optional(),
+  website: z.string().optional().nullable(), // honeypot - must stay empty
 }).strict();
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const validatedData = formSchema.parse(body);
+
+    // Same bot that floods the contact form also posts here, with valid-looking
+    // email and phone but random strings in the free-text fields.
+    const verdict = classifyMembership(validatedData);
+    if (verdict.spam) {
+      console.warn("[membership] rejected as spam:", verdict.reason);
+      return NextResponse.json({ success: true });
+    }
+
+    const ipHash = ipHashOf(req);
+    const recent = await prisma.members.count({
+      where: { ipHash, createdAt: { gte: new Date(Date.now() - RATE_WINDOW_MS) } },
+    });
+    if (recent >= RATE_LIMIT) {
+      return NextResponse.json(
+        { success: false, error: "Too many applications. Please try again later." },
+        { status: 429 }
+      );
+    }
 
     // 🔐 SMTP check MUST be runtime only
     if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
@@ -93,6 +126,7 @@ export async function POST(req: NextRequest) {
         introducedBy: validatedData.introducedBy || null,
         introducer: validatedData.introducer || null,
         membershipStatus: null,
+        ipHash,
       },
     });
 
